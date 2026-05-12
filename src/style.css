@@ -5,9 +5,8 @@
 }
 
 :root {
-  --grid-size: 15px;
+  --grid-size: 10px;
   --grid-color: #d8d8d8;
-
   --color-1: #E74C3D;
   --color-2: #FF8C42;
   --color-3: #FFB3C2;
