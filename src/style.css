@@ -5,8 +5,9 @@
 }
 
 :root {
-  --grid-size: 15px;
+  --grid-size: 20px;
   --grid-color: #d8d8d8;
+  --box-color: #222222;
 }
 
 body {
@@ -15,6 +16,7 @@ body {
 }
 
 #grid {
+  position: relative;
   width: 100vw;
   height: 100vh;
   background-image:
