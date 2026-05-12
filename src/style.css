@@ -1,0 +1,25 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --grid-size: 15px;
+  --grid-color: #d8d8d8;
+}
+
+body {
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+#grid {
+  width: 100vw;
+  height: 100vh;
+  background-image:
+    linear-gradient(var(--grid-color) .5px, transparent .5px),
+    linear-gradient(90deg, var(--grid-color) .5px, transparent .5px);
+  background-size:
+    var(--grid-size) var(--grid-size);
+}
