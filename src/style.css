@@ -5,14 +5,58 @@
 }
 
 :root {
-  --grid-size: 20px;
+  --grid-size: 15px;
   --grid-color: #d8d8d8;
-  --box-color: #222222;
+
+  --color-1: #E74C3D;
+  --color-2: #FF8C42;
+  --color-3: #FFB3C2;
+  --color-4: #FFD166;
+  --color-5: #3C7A3B;
 }
 
 body {
   background-color: #ffffff;
   overflow: hidden;
+}
+
+#palette {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
+  /* background: rgba(255,255,255,0.85); */
+  /* backdrop-filter: blur(6px); */
+  padding: 10px 16px;
+  border-radius: 999px;
+  /* box-shadow: 0 2px 12px rgba(0,0,0,0.15); */
+}
+
+.swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.swatch:nth-child(1) { background: var(--color-1); }
+.swatch:nth-child(2) { background: var(--color-2); }
+.swatch:nth-child(3) { background: var(--color-3); }
+.swatch:nth-child(4) { background: var(--color-4); }
+.swatch:nth-child(5) { background: var(--color-5); }
+
+.swatch:hover {
+  transform: scale(1.15);
+}
+
+.swatch.active {
+  border-color: #fff;
+  outline: 2px solid #555;
+  transform: scale(1.2);
 }
 
 #grid {

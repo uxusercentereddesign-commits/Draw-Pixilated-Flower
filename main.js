@@ -1,18 +1,52 @@
 const grid = document.getElementById('grid');
 const CELL = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--grid-size'));
-const COLOR = getComputedStyle(document.documentElement).getPropertyValue('--box-color').trim();
+
+const getSwatchColor = (swatch) => getComputedStyle(swatch).backgroundColor;
+
+let activeColor = getSwatchColor(document.querySelector('.swatch.active'));
 
 const history = [];
+let isPainting = false;
+const painted = new Set();
 
-grid.addEventListener('click', (e) => {
+const swatches = document.querySelectorAll('.swatch');
+swatches.forEach(swatch => {
+  swatch.addEventListener('click', () => {
+    swatches.forEach(s => s.classList.remove('active'));
+    swatch.classList.add('active');
+    activeColor = getSwatchColor(swatch);
+  });
+});
+
+const paintCell = (clientX, clientY) => {
   const rect = grid.getBoundingClientRect();
-  const x = Math.floor((e.clientX - rect.left) / CELL) * CELL;
-  const y = Math.floor((e.clientY - rect.top) / CELL) * CELL;
+  const x = Math.floor((clientX - rect.left) / CELL) * CELL;
+  const y = Math.floor((clientY - rect.top) / CELL) * CELL;
+  const key = `${x},${y}`;
+
+  if (painted.has(key)) return;
+  painted.add(key);
 
   const cell = document.createElement('div');
-  cell.style.cssText = `position:absolute;left:${x}px;top:${y}px;width:${CELL}px;height:${CELL}px;background:${COLOR};pointer-events:none;`;
+  cell.style.cssText = `position:absolute;left:${x}px;top:${y}px;width:${CELL}px;height:${CELL}px;background:${activeColor};pointer-events:none;`;
   grid.appendChild(cell);
   history.push(cell);
+};
+
+grid.addEventListener('mousedown', (e) => {
+  isPainting = true;
+  painted.clear();
+  paintCell(e.clientX, e.clientY);
+});
+
+grid.addEventListener('mousemove', (e) => {
+  if (!isPainting) return;
+  paintCell(e.clientX, e.clientY);
+});
+
+document.addEventListener('mouseup', () => {
+  isPainting = false;
+  painted.clear();
 });
 
 document.addEventListener('keydown', (e) => {
