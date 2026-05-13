@@ -4,6 +4,7 @@ const paintCursorEl = document.getElementById('paint-cursor');
 const redoBtn = document.querySelector('.redo');
 const eyeToggleBtn = document.querySelector('.eye-toggle');
 const saveBtnEl = document.querySelector('.save-btn');
+const uploadBtn = document.querySelector('.upload-btn');
 const swatches = document.querySelectorAll('.swatch');
 
 const CELL = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--grid-size'));
@@ -109,6 +110,22 @@ saveBtnEl.addEventListener('click', () => {
   a.download = 'drawing.png';
   a.href = offscreen.toDataURL('image/png');
   a.click();
+});
+
+let uploadedImageUrl = null;
+
+uploadBtn.addEventListener('click', () => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (uploadedImageUrl) URL.revokeObjectURL(uploadedImageUrl);
+    uploadedImageUrl = URL.createObjectURL(file);
+    canvasBox.style.setProperty('--canvas-bg-image', `url("${uploadedImageUrl}")`);
+  };
+  input.click();
 });
 
 eyeToggleBtn.addEventListener('click', () => {
