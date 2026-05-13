@@ -146,6 +146,15 @@ body {
   transform: scale(0.97);
 }
 
+.save-btn:disabled {
+  cursor: not-allowed;
+  pointer-events: all;
+}
+
+.save-btn:disabled i {
+  opacity: 0.2;
+}
+
 #canvas-box.image-hidden::before {
   opacity: 0;
 }

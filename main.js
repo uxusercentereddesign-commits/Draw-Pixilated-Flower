@@ -59,6 +59,7 @@ const paintCell = (clientX, clientY) => {
   cell.style.cssText = `position:absolute;left:${x}px;top:${y}px;width:${CELL}px;height:${CELL}px;background:${activeColor};pointer-events:none;`;
   grid.appendChild(cell);
   history.push(cell);
+  saveBtnEl.disabled = false;
 };
 
 grid.addEventListener('mousedown', (e) => {
@@ -84,7 +85,10 @@ document.addEventListener('mouseup', () => {
 });
 
 const saveBtnEl = document.querySelector('.save-btn');
+saveBtnEl.disabled = true;
+
 saveBtnEl.addEventListener('click', () => {
+  if (history.length === 0) return;
   const box = canvasBox.getBoundingClientRect();
   const size = Math.round(box.width);
   const offscreen = document.createElement('canvas');
@@ -115,6 +119,7 @@ eyeToggleBtn.addEventListener('click', () => {
 redoBtn.addEventListener('click', () => {
   history.forEach(cell => cell.remove());
   history.length = 0;
+  saveBtnEl.disabled = true;
 });
 
 document.addEventListener('keydown', (e) => {
@@ -122,5 +127,6 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault();
     const last = history.pop();
     if (last) last.remove();
+    if (history.length === 0) saveBtnEl.disabled = true;
   }
 });
