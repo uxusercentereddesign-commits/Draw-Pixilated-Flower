@@ -207,3 +207,28 @@ body {
 .swatch.active {
   transform: scale(0.97);
 }
+
+#device-block {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--bg-color);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+#device-block p {
+  font-family: 'Pixelify Sans', monospace;
+  font-size: 30px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--canvas-outline);
+  opacity: 0.8;
+  line-height: 1.8;
+}
+
+@media (max-width: 800px) {
+  #device-block { display: flex; }
+}
