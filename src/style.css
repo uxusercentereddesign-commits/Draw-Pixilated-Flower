@@ -85,12 +85,20 @@ body {
 .redo i {
   font-size: 20px;
   color: var(--canvas-outline);
+  opacity: 0.7;
   line-height: 1;
-  transition: color 160ms ease-out;
+  transition: transform 160ms ease-out;
 }
 
-.redo:hover i { color: var(--canvas-outline); opacity: 0.5; }
-.redo:active { transform: scale(0.9); }
+.redo:hover i { 
+    color: var(--canvas-outline); 
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.redo:active { 
+    transform: scale(0.9); 
+}
 
 #palette {
   display: flex;
