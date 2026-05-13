@@ -91,7 +91,8 @@ body {
 }
 
 .redo,
-.eye-toggle {
+.eye-toggle,
+.save-btn {
   position: absolute;
   right: 16px;
   pointer-events: all;
@@ -105,15 +106,22 @@ body {
 
 .redo {
   top: 16px;
+  right: auto;
+  left: 16px;
   rotate: 110deg;
 }
 
 .eye-toggle {
+  top: 16px;
+}
+
+.save-btn {
   top: 56px;
 }
 
 .redo i,
-.eye-toggle i {
+.eye-toggle i,
+.save-btn i {
   font-size: 18px;
   color: var(--canvas-outline);
   opacity: 0.5;
@@ -121,17 +129,20 @@ body {
 }
 
 .redo:hover,
-.eye-toggle:hover {
+.eye-toggle:hover,
+.save-btn:hover {
   transform: scale(1.05);
 }
 
 .redo:hover i,
-.eye-toggle:hover i {
+.eye-toggle:hover i,
+.save-btn:hover i {
   opacity: 1;
 }
 
 .redo:active,
-.eye-toggle:active {
+.eye-toggle:active,
+.save-btn:active {
   transform: scale(0.97);
 }
 

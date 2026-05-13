@@ -40,7 +40,8 @@ const isNearButton = (clientX, clientY, btn) => {
 
 const isNearRedo = (clientX, clientY) =>
   isNearButton(clientX, clientY, redoBtn) ||
-  isNearButton(clientX, clientY, document.querySelector('.eye-toggle'));
+  isNearButton(clientX, clientY, document.querySelector('.eye-toggle')) ||
+  isNearButton(clientX, clientY, document.querySelector('.save-btn'));
 
 const paintCell = (clientX, clientY) => {
   const box = canvasBox.getBoundingClientRect();
@@ -80,6 +81,29 @@ grid.addEventListener('mousemove', (e) => {
 document.addEventListener('mouseup', () => {
   isPainting = false;
   painted.clear();
+});
+
+const saveBtnEl = document.querySelector('.save-btn');
+saveBtnEl.addEventListener('click', () => {
+  const box = canvasBox.getBoundingClientRect();
+  const size = Math.round(box.width);
+  const offscreen = document.createElement('canvas');
+  offscreen.width = size;
+  offscreen.height = size;
+  const ctx = offscreen.getContext('2d');
+
+  grid.querySelectorAll('div').forEach(cell => {
+    const x = parseFloat(cell.style.left) - box.left;
+    const y = parseFloat(cell.style.top) - box.top;
+    if (x < 0 || y < 0 || x >= size || y >= size) return;
+    ctx.fillStyle = cell.style.background;
+    ctx.fillRect(x, y, CELL, CELL);
+  });
+
+  const a = document.createElement('a');
+  a.download = 'drawing.png';
+  a.href = offscreen.toDataURL('image/png');
+  a.click();
 });
 
 const eyeToggleBtn = document.querySelector('.eye-toggle');
