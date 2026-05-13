@@ -1,15 +1,19 @@
 const grid = document.getElementById('grid');
 const CELL = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--grid-size'));
 
-const getSwatchColor = (swatch) => getComputedStyle(swatch).backgroundColor;
-
-let activeColor = getSwatchColor(document.querySelector('.swatch.active'));
+const rootStyle = getComputedStyle(document.documentElement);
+const getSwatchColor = (swatch) => {
+  const index = [...document.querySelectorAll('.swatch')].indexOf(swatch) + 1;
+  return rootStyle.getPropertyValue(`--color-${index}`).trim();
+};
 
 const history = [];
 let isPainting = false;
 const painted = new Set();
 
 const swatches = document.querySelectorAll('.swatch');
+let activeColor = getSwatchColor(document.querySelector('.swatch.active'));
+
 document.getElementById('palette').addEventListener('click', (e) => {
   const swatch = e.target.closest('.swatch');
   if (!swatch) return;
