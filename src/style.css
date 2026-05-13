@@ -7,6 +7,9 @@
 :root {
   --grid-size: 10px;
   --grid-color: #d8d8d8;
+  --bg-color: #ffffff;
+  --swatch-outline: #555555;
+
   --color-1: #E74C3D;
   --color-2: #FF8C42;
   --color-3: #FFB3C2;
@@ -14,8 +17,16 @@
   --color-5: #3C7A3B;
 }
 
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --grid-color: #3a3a3a;
+    --bg-color: #111111;
+    --swatch-outline: #aaaaaa;
+  }
+} */
+
 body {
-  background-color: #ffffff;
+  background-color: var(--bg-color);
   overflow: hidden;
 }
 
@@ -39,7 +50,9 @@ body {
   border-radius: 50%;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: transform 0.15s, border-color 0.15s;
+  /* transition: transform 0.15s, border-color 0.15s; */
+  transition: transform 160ms ease-out border-color 160ms ease-out;
+
 }
 
 .swatch:nth-child(1) { background: var(--color-1); }
@@ -49,13 +62,17 @@ body {
 .swatch:nth-child(5) { background: var(--color-5); }
 
 .swatch:hover {
-  transform: scale(1.15);
+  transform: scale(1.05);
+}
+
+.swatch:active {
+  transform: scale(0.95);
 }
 
 .swatch.active {
-  border-color: #fff;
-  outline: 2px solid #555;
-  transform: scale(1.2);
+    outline-offset: 1px;;
+  outline: 2px solid var(--swatch-outline);
+  transform: scale(0.97);
 }
 
 #grid {

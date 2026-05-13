@@ -3,19 +3,28 @@ const CELL = parseInt(getComputedStyle(document.documentElement).getPropertyValu
 
 const getSwatchColor = (swatch) => getComputedStyle(swatch).backgroundColor;
 
-let activeColor = getSwatchColor(document.querySelector('.swatch.active'));
+let activeColor = getSwatchColor(document.querySelector('.swatch'));
 
 const history = [];
 let isPainting = false;
 const painted = new Set();
 
+// const swatches = document.querySelectorAll('.swatch');
+// swatches.forEach(swatch => {
+//   swatch.addEventListener('click', () => {
+//     swatches.forEach(s => s.classList.remove('active'));
+//     swatch.classList.add('active');
+//     activeColor = getSwatchColor(swatch);
+//   });
+// });
+
 const swatches = document.querySelectorAll('.swatch');
-swatches.forEach(swatch => {
-  swatch.addEventListener('click', () => {
-    swatches.forEach(s => s.classList.remove('active'));
-    swatch.classList.add('active');
-    activeColor = getSwatchColor(swatch);
-  });
+document.getElementById('palette').addEventListener('click', (e) => {
+  const swatch = e.target.closest('.swatch');
+  if (!swatch) return;
+  swatches.forEach(s => s.classList.remove('active'));
+  swatch.classList.add('active');
+  activeColor = getSwatchColor(swatch);
 });
 
 const paintCell = (clientX, clientY) => {
