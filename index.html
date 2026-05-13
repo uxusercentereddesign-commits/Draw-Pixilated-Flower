@@ -5,16 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Draw Pixilated Flower</title>
     <link rel="stylesheet" href="src/style.css" />
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
   </head>
   <body>
     <main id="grid"></main>
-    <div id="palette">
-      <button class="swatch"></button>
-      <button class="swatch"></button>
-      <button class="swatch"></button>
-      <button class="swatch"></button>
-      <button class="swatch"></button>
+    <div id="drawing-wrapper">
+      <div id="canvas-box">
+        <button class="redo"><i class="ph-bold ph-arrow-counter-clockwise"></i></button>
+      </div>
+      <div id="palette">
+        <button class="swatch active"></button>
+        <button class="swatch"></button>
+        <button class="swatch"></button>
+        <button class="swatch"></button>
+        <button class="swatch"></button>
+      </div>
     </div>
+    <div id="paint-cursor"><i class="ph ph-paint-bucket"></i></div>
     <script src="main.js"></script>
   </body>
 </html>

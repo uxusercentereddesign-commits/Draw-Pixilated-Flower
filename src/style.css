@@ -5,10 +5,12 @@
 }
 
 :root {
-  --grid-size: 10px;
+  --grid-size: 15px;
   --grid-color: #d8d8d8;
+  --outside-dim: rgba(255, 255, 255, 0.583);
   --bg-color: #ffffff;
   --swatch-outline: #555555;
+  --canvas-outline: #222222;
 
   --color-1: #E74C3D;
   --color-2: #FF8C42;
@@ -17,31 +19,83 @@
   --color-5: #3C7A3B;
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --grid-color: #3a3a3a;
-    --bg-color: #111111;
-    --swatch-outline: #aaaaaa;
-  }
-} */
-
 body {
   background-color: var(--bg-color);
   overflow: hidden;
+  position: relative;
+  min-height: 100vh;
+  width: 100vw;
 }
 
-#palette {
+#grid {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background-image:
+    linear-gradient(var(--grid-color) .5px, transparent .5px),
+    linear-gradient(90deg, var(--grid-color) .5px, transparent .5px);
+  background-size: var(--grid-size) var(--grid-size);
+}
+
+#grid.on-canvas { cursor: none; }
+
+#paint-cursor {
   position: fixed;
-  bottom: 24px;
+  pointer-events: none;
+  display: none;
+  font-size: 20px;
+  color: var(--canvas-outline);
+  translate: -4px -20px;
+  transform: scaleX(-1);
+}
+
+#drawing-wrapper {
+  position: absolute;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  pointer-events: none;
+}
+
+#canvas-box {
+  width: 600px;
+  height: 600px;
+  border: 4px dashed var(--canvas-outline);
+  box-shadow: 0 0 0 100vmax var(--outside-dim);
+}
+
+.redo {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  rotate: 110deg;
+  pointer-events: all;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 160ms ease-out;
+}
+
+.redo i {
+  font-size: 20px;
+  color: var(--canvas-outline);
+  line-height: 1;
+  transition: color 160ms ease-out;
+}
+
+.redo:hover i { color: var(--canvas-outline); opacity: 0.5; }
+.redo:active { transform: scale(0.9); }
+
+#palette {
   display: flex;
   gap: 16px;
-  /* background: rgba(255,255,255,0.85); */
-  /* backdrop-filter: blur(6px); */
-  padding: 10px 16px;
-  border-radius: 999px;
-  /* box-shadow: 0 2px 12px rgba(0,0,0,0.15); */
+  padding: 8px 16px;
 }
 
 .swatch {
@@ -50,9 +104,8 @@ body {
   border-radius: 50%;
   border: 1px solid transparent;
   cursor: pointer;
-  /* transition: transform 0.15s, border-color 0.15s; */
-  transition: transform 160ms ease-out border-color 160ms ease-out;
-
+  pointer-events: all;
+  transition: transform 160ms ease-out, border-color 160ms ease-out;
 }
 
 .swatch:nth-child(1) { background: var(--color-1); }
@@ -61,27 +114,11 @@ body {
 .swatch:nth-child(4) { background: var(--color-4); }
 .swatch:nth-child(5) { background: var(--color-5); }
 
-.swatch:hover {
-  transform: scale(1.05);
-}
-
-.swatch:active {
-  transform: scale(0.95);
-}
+.swatch:hover { transform: scale(1.05); }
+.swatch:active { transform: scale(0.95); }
 
 .swatch.active {
-    outline-offset: 1px;;
   outline: 2px solid var(--swatch-outline);
+  outline-offset: 1px;
   transform: scale(0.97);
-}
-
-#grid {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  background-image:
-    linear-gradient(var(--grid-color) .5px, transparent .5px),
-    linear-gradient(90deg, var(--grid-color) .5px, transparent .5px);
-  background-size:
-    var(--grid-size) var(--grid-size);
 }
