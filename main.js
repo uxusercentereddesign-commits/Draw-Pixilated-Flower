@@ -31,12 +31,16 @@ const isInsideCanvas = (clientX, clientY) => {
   return clientX >= box.left && clientX <= box.right && clientY >= box.top && clientY <= box.bottom;
 };
 
-const isNearRedo = (clientX, clientY) => {
-  const box = redoBtn.getBoundingClientRect();
+const isNearButton = (clientX, clientY, btn) => {
+  const box = btn.getBoundingClientRect();
   const MARGIN = 24;
   return clientX >= box.left - MARGIN && clientX <= box.right + MARGIN &&
          clientY >= box.top - MARGIN && clientY <= box.bottom + MARGIN;
 };
+
+const isNearRedo = (clientX, clientY) =>
+  isNearButton(clientX, clientY, redoBtn) ||
+  isNearButton(clientX, clientY, document.querySelector('.eye-toggle'));
 
 const paintCell = (clientX, clientY) => {
   const box = canvasBox.getBoundingClientRect();
@@ -76,6 +80,12 @@ grid.addEventListener('mousemove', (e) => {
 document.addEventListener('mouseup', () => {
   isPainting = false;
   painted.clear();
+});
+
+const eyeToggleBtn = document.querySelector('.eye-toggle');
+eyeToggleBtn.addEventListener('click', () => {
+  const hidden = canvasBox.classList.toggle('image-hidden');
+  eyeToggleBtn.querySelector('i').className = hidden ? 'ph-bold ph-eye-slash' : 'ph-bold ph-eye';
 });
 
 redoBtn.addEventListener('click', () => {
