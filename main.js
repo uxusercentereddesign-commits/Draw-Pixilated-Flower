@@ -1,17 +1,31 @@
 const grid = document.getElementById('grid');
-const CELL = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--grid-size'));
+const canvasBox = document.getElementById('canvas-box');
+const paintCursorEl = document.getElementById('paint-cursor');
+const redoBtn = document.querySelector('.redo');
+const eyeToggleBtn = document.querySelector('.eye-toggle');
+const saveBtnEl = document.querySelector('.save-btn');
+const swatches = document.querySelectorAll('.swatch');
 
+const CELL = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--grid-size'));
 const rootStyle = getComputedStyle(document.documentElement);
+
 const getSwatchColor = (swatch) => {
-  const index = [...document.querySelectorAll('.swatch')].indexOf(swatch) + 1;
+  const index = [...swatches].indexOf(swatch) + 1;
   return rootStyle.getPropertyValue(`--color-${index}`).trim();
 };
+
+// Cache rects — these elements never move during a session
+let canvasRect = canvasBox.getBoundingClientRect();
+let btnRects = [redoBtn, eyeToggleBtn, saveBtnEl].map(b => b.getBoundingClientRect());
+
+window.addEventListener('resize', () => {
+  canvasRect = canvasBox.getBoundingClientRect();
+  btnRects = [redoBtn, eyeToggleBtn, saveBtnEl].map(b => b.getBoundingClientRect());
+});
 
 const history = [];
 let isPainting = false;
 const painted = new Set();
-
-const swatches = document.querySelectorAll('.swatch');
 let activeColor = getSwatchColor(document.querySelector('.swatch.active'));
 
 document.getElementById('palette').addEventListener('click', (e) => {
@@ -22,44 +36,31 @@ document.getElementById('palette').addEventListener('click', (e) => {
   activeColor = getSwatchColor(swatch);
 });
 
-const canvasBox = document.getElementById('canvas-box');
-const paintCursorEl = document.getElementById('paint-cursor');
-const redoBtn = document.querySelector('.redo');
-
-const isInsideCanvas = (clientX, clientY) => {
-  const box = canvasBox.getBoundingClientRect();
-  return clientX >= box.left && clientX <= box.right && clientY >= box.top && clientY <= box.bottom;
-};
-
-const isNearButton = (clientX, clientY, btn) => {
-  const box = btn.getBoundingClientRect();
-  const MARGIN = 24;
-  return clientX >= box.left - MARGIN && clientX <= box.right + MARGIN &&
-         clientY >= box.top - MARGIN && clientY <= box.bottom + MARGIN;
-};
-
-const isNearRedo = (clientX, clientY) =>
-  isNearButton(clientX, clientY, redoBtn) ||
-  isNearButton(clientX, clientY, document.querySelector('.eye-toggle')) ||
-  isNearButton(clientX, clientY, document.querySelector('.save-btn'));
+const MARGIN = 24;
+const isNearAnyBtn = (x, y) => btnRects.some(r =>
+  x >= r.left - MARGIN && x <= r.right + MARGIN &&
+  y >= r.top - MARGIN && y <= r.bottom + MARGIN
+);
 
 const paintCell = (clientX, clientY) => {
-  const box = canvasBox.getBoundingClientRect();
-  if (clientX < box.left || clientX > box.right || clientY < box.top || clientY > box.bottom) return;
+  if (clientX < canvasRect.left || clientX > canvasRect.right ||
+      clientY < canvasRect.top  || clientY > canvasRect.bottom) return;
 
-  const rect = grid.getBoundingClientRect();
-  const x = Math.floor((clientX - rect.left) / CELL) * CELL;
-  const y = Math.floor((clientY - rect.top) / CELL) * CELL;
+  // Grid is position:absolute at 0,0 — clientX/Y map directly to grid coords
+  const x = Math.floor(clientX / CELL) * CELL;
+  const y = Math.floor(clientY / CELL) * CELL;
   const key = `${x},${y}`;
 
   if (painted.has(key)) return;
   painted.add(key);
 
   const cell = document.createElement('div');
-  cell.style.cssText = `position:absolute;left:${x}px;top:${y}px;width:${CELL}px;height:${CELL}px;background:${activeColor};pointer-events:none;`;
+  cell.className = 'pixel';
+  cell.style.cssText = `left:${x}px;top:${y}px;background:${activeColor}`;
   grid.appendChild(cell);
   history.push(cell);
-  saveBtnEl.disabled = false;
+
+  if (history.length === 1) saveBtnEl.disabled = false;
 };
 
 grid.addEventListener('mousedown', (e) => {
@@ -69,14 +70,16 @@ grid.addEventListener('mousedown', (e) => {
 });
 
 grid.addEventListener('mousemove', (e) => {
-  const inside = isInsideCanvas(e.clientX, e.clientY);
-  const nearRedo = isNearRedo(e.clientX, e.clientY);
+  const { clientX, clientY } = e;
+  const inside = clientX >= canvasRect.left && clientX <= canvasRect.right &&
+                 clientY >= canvasRect.top  && clientY <= canvasRect.bottom;
+  const nearBtn = isNearAnyBtn(clientX, clientY);
+
   grid.classList.toggle('on-canvas', inside);
-  paintCursorEl.style.display = inside && !nearRedo ? 'block' : 'none';
-  paintCursorEl.style.left = e.clientX + 'px';
-  paintCursorEl.style.top = e.clientY + 'px';
-  if (!isPainting) return;
-  paintCell(e.clientX, e.clientY);
+  paintCursorEl.style.transform = `translate(${clientX - 4}px, ${clientY - 20}px) scaleX(-1)`;
+  paintCursorEl.classList.toggle('visible', inside && !nearBtn);
+
+  if (isPainting) paintCell(clientX, clientY);
 });
 
 document.addEventListener('mouseup', () => {
@@ -84,21 +87,19 @@ document.addEventListener('mouseup', () => {
   painted.clear();
 });
 
-const saveBtnEl = document.querySelector('.save-btn');
 saveBtnEl.disabled = true;
 
 saveBtnEl.addEventListener('click', () => {
   if (history.length === 0) return;
-  const box = canvasBox.getBoundingClientRect();
-  const size = Math.round(box.width);
+  const size = Math.round(canvasRect.width);
   const offscreen = document.createElement('canvas');
   offscreen.width = size;
   offscreen.height = size;
   const ctx = offscreen.getContext('2d');
 
-  grid.querySelectorAll('div').forEach(cell => {
-    const x = parseFloat(cell.style.left) - box.left;
-    const y = parseFloat(cell.style.top) - box.top;
+  grid.querySelectorAll('.pixel').forEach(cell => {
+    const x = parseFloat(cell.style.left) - canvasRect.left;
+    const y = parseFloat(cell.style.top) - canvasRect.top;
     if (x < 0 || y < 0 || x >= size || y >= size) return;
     ctx.fillStyle = cell.style.background;
     ctx.fillRect(x, y, CELL, CELL);
@@ -110,7 +111,6 @@ saveBtnEl.addEventListener('click', () => {
   a.click();
 });
 
-const eyeToggleBtn = document.querySelector('.eye-toggle');
 eyeToggleBtn.addEventListener('click', () => {
   const hidden = canvasBox.classList.toggle('image-hidden');
   eyeToggleBtn.querySelector('i').className = hidden ? 'ph-bold ph-eye-slash' : 'ph-bold ph-eye';
