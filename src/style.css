@@ -64,8 +64,8 @@ body {
 #canvas-label {
   font-family: 'Pixelify Sans', monospace;
   font-size: 24px;
-  font-weight: 200;
-  letter-spacing: 0.24em;
+  font-weight: 300;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--canvas-outline);
   opacity: 0.5;
@@ -76,7 +76,7 @@ body {
   width: 600px;
   height: 600px;
   /* border: 4px dashed var(--canvas-outline); */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect width='100%25' height='100%25' fill='none' stroke='%23b7b7b7' stroke-width='4' stroke-dasharray='8 12' stroke-dashoffset='0'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect width='100%25' height='100%25' fill='none' stroke='%23c8c8c8' stroke-width='4' stroke-dasharray='8 12' stroke-dashoffset='0'/%3E%3C/svg%3E");
   box-shadow: 0 0 0 100vmax var(--outside-dim);
   pointer-events: none;
 
@@ -99,7 +99,7 @@ body {
 .redo i {
   font-size: 18px;
   color: var(--canvas-outline);
-  opacity: 0.7;
+  opacity: 0.5;
   transition: opacity 160ms ease-out;
 }
 
