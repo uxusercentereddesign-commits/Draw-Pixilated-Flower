@@ -1,13 +1,12 @@
 const grid = document.getElementById('grid');
 const canvasBox = document.getElementById('canvas-box');
-const paintCursorEl = document.getElementById('paint-cursor');
-const redoBtn = document.querySelector('.redo');
+const clearBtn = document.querySelector('.redo');
 const eyeToggleBtn = document.querySelector('.eye-toggle');
 const saveBtnEl = document.querySelector('.save-btn');
 const uploadBtn = document.querySelector('.upload-btn');
 const swatches = document.querySelectorAll('.swatch');
 
-const CELL = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--grid-size'));
+const CELL = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--grid-size'), 10);
 const rootStyle = getComputedStyle(document.documentElement);
 
 const getSwatchColor = (swatch) => {
@@ -15,13 +14,18 @@ const getSwatchColor = (swatch) => {
   return rootStyle.getPropertyValue(`--color-${index}`).trim();
 };
 
-// Cache rects — these elements never move during a session
+const BUCKET_PATH = 'M234.53,139.07a8,8,0,0,0,3.13-13.24L122.17,10.34a8,8,0,0,0-11.31,0L70.25,51,45.65,26.34A8,8,0,0,0,34.34,37.66l24.6,24.6L15,106.17a24,24,0,0,0,0,33.94L99.89,225a24,24,0,0,0,33.94,0l78.49-78.49Zm-32.19-5.24-79.83,79.83a8,8,0,0,1-11.31,0L26.34,128.8a8,8,0,0,1,0-11.31L70.25,73.57l29.12,29.12a28,28,0,1,0,11.31-11.32L81.57,62.26l35-34.95L217.19,128l-11.72,3.9A8.09,8.09,0,0,0,202.34,133.83Zm-86.83-26.31,0,0a13.26,13.26,0,1,1-.05.06S115.51,107.53,115.51,107.52Z';
+const DROP_PATH = 'M238.66,163.52a8,8,0,0,0-13.32,0C223.57,166.23,208,190.09,208,208a24,24,0,0,0,48,0C256,190.09,240.43,166.23,238.66,163.56Z';
+
+const buildCursor = (color) => {
+  const fill = color.replace('#', '%23');
+  return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' width='18' height='18'%3E%3Cg transform='translate(256,0) scale(-1,1)'%3E%3Cpath fill='%23222222' d='${BUCKET_PATH}'/%3E%3Cg transform='translate(232,186) scale(1.5) translate(-232,-186)'%3E%3Cpath fill='${fill}' d='${DROP_PATH}'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") 2 20, crosshair`;
+};
+
 let canvasRect = canvasBox.getBoundingClientRect();
-let btnRects = [redoBtn, eyeToggleBtn, saveBtnEl].map(b => b.getBoundingClientRect());
 
 window.addEventListener('resize', () => {
   canvasRect = canvasBox.getBoundingClientRect();
-  btnRects = [redoBtn, eyeToggleBtn, saveBtnEl].map(b => b.getBoundingClientRect());
 });
 
 const history = [];
@@ -35,20 +39,15 @@ document.getElementById('palette').addEventListener('click', (e) => {
   swatches.forEach(s => s.classList.remove('active'));
   swatch.classList.add('active');
   activeColor = getSwatchColor(swatch);
+  grid.style.cursor = buildCursor(activeColor);
 });
-
-const MARGIN = 24;
-const isNearAnyBtn = (x, y) => btnRects.some(r =>
-  x >= r.left - MARGIN && x <= r.right + MARGIN &&
-  y >= r.top - MARGIN && y <= r.bottom + MARGIN
-);
 
 const paintCell = (clientX, clientY) => {
   if (clientX < canvasRect.left || clientX > canvasRect.right ||
       clientY < canvasRect.top  || clientY > canvasRect.bottom) return;
 
-  const x = canvasRect.left + Math.floor((clientX - canvasRect.left) / CELL) * CELL;
-  const y = canvasRect.top  + Math.floor((clientY - canvasRect.top)  / CELL) * CELL;
+  const x = Math.floor(clientX / CELL) * CELL;
+  const y = Math.floor(clientY / CELL) * CELL;
   const key = `${x},${y}`;
 
   if (painted.has(key)) return;
@@ -73,12 +72,8 @@ grid.addEventListener('mousemove', (e) => {
   const { clientX, clientY } = e;
   const inside = clientX >= canvasRect.left && clientX <= canvasRect.right &&
                  clientY >= canvasRect.top  && clientY <= canvasRect.bottom;
-  const nearBtn = isNearAnyBtn(clientX, clientY);
 
-  grid.classList.toggle('on-canvas', inside);
-  paintCursorEl.style.transform = `translate(${clientX - 4}px, ${clientY - 20}px) scaleX(-1)`;
-  paintCursorEl.classList.toggle('visible', inside && !nearBtn);
-
+  grid.style.cursor = inside ? buildCursor(activeColor) : '';
   if (isPainting) paintCell(clientX, clientY);
 });
 
@@ -87,10 +82,7 @@ document.addEventListener('mouseup', () => {
   painted.clear();
 });
 
-saveBtnEl.disabled = true;
-
 saveBtnEl.addEventListener('click', () => {
-  if (history.length === 0) return;
   const size = Math.round(canvasRect.width);
   const offscreen = document.createElement('canvas');
   offscreen.width = size;
@@ -124,17 +116,17 @@ uploadBtn.addEventListener('click', () => {
     uploadedImageUrl = URL.createObjectURL(file);
     canvasBox.style.setProperty('--canvas-bg-image', `url("${uploadedImageUrl}")`);
     canvasBox.classList.remove('image-hidden');
-    eyeToggleBtn.querySelector('i').className = 'ph-bold ph-eye';
+    eyeToggleBtn.classList.add('eye-open');
   };
   input.click();
 });
 
 eyeToggleBtn.addEventListener('click', () => {
   const hidden = canvasBox.classList.toggle('image-hidden');
-  eyeToggleBtn.querySelector('i').className = hidden ? 'ph-bold ph-eye-slash' : 'ph-bold ph-eye';
+  eyeToggleBtn.classList.toggle('eye-open', !hidden);
 });
 
-redoBtn.addEventListener('click', () => {
+clearBtn.addEventListener('click', () => {
   history.forEach(cell => cell.remove());
   history.length = 0;
   saveBtnEl.disabled = true;

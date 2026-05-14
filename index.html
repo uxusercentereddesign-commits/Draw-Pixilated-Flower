@@ -9,14 +9,17 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
   </head>
   <body>
-    <main id="grid"></main>
+    <div id="grid"></div>
     <div id="canvas">
-     <p id="canvas-label">Pixel Draw</p>
+     <h1 id="canvas-label">Pixel Draw</h1>
      <div id="drawing-wrapper">
       <div id="canvas-box" class="image-hidden">
         <button class="redo"><i class="ph-bold ph-arrow-counter-clockwise"></i></button>
-        <button class="eye-toggle"><i class="ph-bold ph-eye-slash"></i></button>
-        <button class="save-btn"><i class="ph-bold ph-download-simple"></i></button>
+        <button class="eye-toggle">
+          <i class="ph-bold ph-eye-slash"></i>
+          <i class="ph-bold ph-eye"></i>
+        </button>
+        <button class="save-btn" disabled><i class="ph-bold ph-download-simple"></i></button>
       </div>
       <div id="palette">
         <button class="swatch active"></button>
@@ -28,8 +31,7 @@
      </div>
      <button class="upload-btn">Add a reference image</button>
     </div>
-    <div id="paint-cursor"><i class="ph ph-paint-bucket"></i></div>
-    <div id="device-block">
+<div id="device-block" aria-hidden="true">
       <p>Open this link on a<br>laptop to draw</p>
     </div>
     <script src="main.js"></script>
