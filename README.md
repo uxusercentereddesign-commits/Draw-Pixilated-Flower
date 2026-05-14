@@ -1,5 +1,7 @@
 # Draw Pixilated Flower
 
+**Live:** https://draw-pixilated-flower.vercel.app/
+
 A browser-based pixel drawing app. Works on laptop/desktop only — screens narrower than 800px show a "Open this link on a laptop to draw" message.
 
 ## Stack
@@ -70,9 +72,11 @@ Clicking the download button renders all `.pixel` elements onto an offscreen `<c
 ## File structure
 
 ```
-index.html          — markup
-main.js             — all JS logic
-src/style.css       — all styles and CSS variables
-flower image.png    — default reference image
-Union.png           — mask shape used for color swatches
+index.html                    — markup (includes Open Graph + Twitter Card meta tags)
+main.js                       — all JS logic
+src/style.css                 — all styles and CSS variables
+flower image.png              — default reference image
+Union.png                     — mask shape used for color swatches
+Pixlated flower.png           — favicon (64×64)
+Pixlated flower large size.png — OG/Twitter share image
 ```
