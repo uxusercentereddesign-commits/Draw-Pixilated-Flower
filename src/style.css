@@ -5,7 +5,7 @@
 }
 
 :root {
-  --grid-size: 16px;
+  --grid-size: 12px;
   --grid-color: #d8d8d8;
   --outside-dim: rgba(255, 255, 255, 0.583);
   --bg-color: #ffffff;
@@ -18,11 +18,11 @@
   --spacing-md: 16px;
   --btn-icon-size: 28px;
 
-  --color-1: #4e9954;
-  --color-2: #9f7654;
-  --color-3: #DCE9F5;
-  --color-4: #F0A878;
-  --color-5: #4A90D9; 
+  --color-1: #E63946;
+  --color-2: #DCE9F5;
+  --color-3: #F4C430;
+  --color-4: #F4A7B9;
+  --color-5: #4A8C3F; 
   
 }
 
@@ -73,12 +73,12 @@ body {
 
 #canvas-label {
   font-family: var(--font-pixel);
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 400;
-  letter-spacing: 0.5em;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--ink);
-  opacity: 0.3;
+  opacity: 1;
   white-space: nowrap;
   z-index: 1;
 }
