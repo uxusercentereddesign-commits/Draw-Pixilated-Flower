@@ -289,6 +289,9 @@ body {
 
 @media (hover: none) and (pointer: coarse),
        (max-width: 800px) {
+  #drawing-wrapper {
+    display: none;
+  }
   #device-block {
     display: flex;
   }
