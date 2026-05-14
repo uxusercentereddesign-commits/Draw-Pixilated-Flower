@@ -11,6 +11,7 @@
   --bg-color: #ffffff;
   --swatch-outline: #222222;
   --canvas-outline: #222222;
+  --dark-color: #222222;
 
   --color-1: #E74C3D;
   --color-2: #FF8C42;
@@ -61,11 +62,19 @@ body {
   opacity: 1;
 }
 
-#drawing-wrapper {
+#canvas {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0;
+  pointer-events: none;
+  /* z-index: 1; */
+}
+
+#drawing-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -75,12 +84,13 @@ body {
 
 #canvas-label {
   font-family: 'Pixelify Sans', monospace;
-  font-size: 24px;
+  font-size: 40px;
   font-weight: 400;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--canvas-outline);
-  opacity: 0.5;
+  opacity: 0.6;
+  white-space: nowrap;
 }
 
 #canvas-box {
@@ -128,9 +138,10 @@ body {
   font-size: 14px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--canvas-outline);
+  color: var(--dark-color);
   opacity: 0.5;
   white-space: nowrap;
+  z-index: 1;
 }
 
 .redo {
@@ -150,7 +161,7 @@ body {
 
 
 .upload-btn:hover {
-  opacity: 1;
+  opacity: 0.8;
   transform: scale(1.05);
 }
 
@@ -176,7 +187,7 @@ body {
 .redo:hover i,
 .eye-toggle:hover i,
 .save-btn:hover i {
-  opacity: 1;
+  opacity: .8;
 }
 
 .redo:active,
@@ -200,6 +211,7 @@ body {
 
 #palette {
   display: flex;
+  flex-direction: row;
   gap: 16px;
   padding: 8px 16px;
 }

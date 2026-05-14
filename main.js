@@ -47,9 +47,8 @@ const paintCell = (clientX, clientY) => {
   if (clientX < canvasRect.left || clientX > canvasRect.right ||
       clientY < canvasRect.top  || clientY > canvasRect.bottom) return;
 
-  // Grid is position:absolute at 0,0 — clientX/Y map directly to grid coords
-  const x = Math.floor(clientX / CELL) * CELL;
-  const y = Math.floor(clientY / CELL) * CELL;
+  const x = canvasRect.left + Math.floor((clientX - canvasRect.left) / CELL) * CELL;
+  const y = canvasRect.top  + Math.floor((clientY - canvasRect.top)  / CELL) * CELL;
   const key = `${x},${y}`;
 
   if (painted.has(key)) return;
@@ -124,6 +123,8 @@ uploadBtn.addEventListener('click', () => {
     if (uploadedImageUrl) URL.revokeObjectURL(uploadedImageUrl);
     uploadedImageUrl = URL.createObjectURL(file);
     canvasBox.style.setProperty('--canvas-bg-image', `url("${uploadedImageUrl}")`);
+    canvasBox.classList.remove('image-hidden');
+    eyeToggleBtn.querySelector('i').className = 'ph-bold ph-eye';
   };
   input.click();
 });
