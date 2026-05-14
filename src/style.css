@@ -268,16 +268,12 @@ body {
 #device-block {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background: var(--bg-color);
   z-index: 9999;
   align-items: center;
   justify-content: center;
   text-align: center;
-  overflow: hidden;
 }
 
 #device-block p {
@@ -292,5 +288,4 @@ body {
 
 @media (hover: none) and (pointer: coarse), (max-width: 800px) {
   #device-block { display: flex; }
-  body { overflow: hidden; }
 }
