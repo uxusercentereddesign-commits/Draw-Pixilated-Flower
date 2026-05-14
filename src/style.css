@@ -18,7 +18,7 @@
   --spacing-md: 16px;
   --btn-icon-size: 28px;
 
-  --color-1: #7DBF82;
+  --color-1: #4e9954;
   --color-2: #9f7654;
   --color-3: #DCE9F5;
   --color-4: #F0A878;
@@ -73,12 +73,12 @@ body {
 
 #canvas-label {
   font-family: var(--font-pixel);
-  font-size: 40px;
+  font-size: 24px;
   font-weight: 400;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.5em;
   text-transform: uppercase;
   color: var(--ink);
-  opacity: 1;
+  opacity: 0.3;
   white-space: nowrap;
   z-index: 1;
 }
