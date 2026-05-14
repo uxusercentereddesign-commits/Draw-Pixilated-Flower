@@ -286,6 +286,6 @@ body {
   line-height: 1.8;
 }
 
-@media (max-width: 800px) {
+@media (hover: none) and (pointer: coarse), (max-width: 800px) {
   #device-block { display: flex; }
 }
