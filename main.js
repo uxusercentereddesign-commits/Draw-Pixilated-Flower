@@ -132,8 +132,10 @@ clearBtn.addEventListener('click', () => {
   saveBtnEl.disabled = true;
 });
 
+const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+
 document.addEventListener('keydown', (e) => {
-  if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
+  if ((isMac ? e.metaKey : e.ctrlKey) && e.key === 'z') {
     e.preventDefault();
     const last = history.pop();
     if (last) last.remove();

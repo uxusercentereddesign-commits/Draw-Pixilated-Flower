@@ -78,8 +78,9 @@ body {
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--ink);
-  opacity: 0.6;
+  opacity: 1;
   white-space: nowrap;
+  z-index: 1;
 }
 
 #canvas-box {
