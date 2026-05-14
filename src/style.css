@@ -7,7 +7,7 @@
 :root {
   --grid-size: 12px;
   --grid-color: #d8d8d8;
-  --outside-dim: rgba(255, 255, 255, 0.583);
+  --outside-dim: rgba(255, 255, 255, 0.723);
   --bg-color: #ffffff;
   --ink: #222222;
 
@@ -69,6 +69,7 @@ body {
   align-items: center;
   gap: var(--spacing-lg);
   pointer-events: none;
+  overflow: visible;
 }
 
 #canvas-row {
@@ -77,6 +78,7 @@ body {
   align-items: flex-start;
   gap: var(--spacing-md);
   pointer-events: none;
+  overflow: visible;
 }
 
 .canvas-side {
