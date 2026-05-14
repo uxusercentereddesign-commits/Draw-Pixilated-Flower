@@ -1,3 +1,11 @@
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
+const BUCKET = import.meta.env.VITE_SUPABASE_BUCKET;
+
 const grid = document.getElementById('grid');
 const canvasBox = document.getElementById('canvas-box');
 const clearBtn = document.querySelector('.redo');
@@ -101,6 +109,14 @@ saveBtnEl.addEventListener('click', () => {
   a.download = 'drawing.png';
   a.href = offscreen.toDataURL('image/png');
   a.click();
+
+  offscreen.toBlob(async (blob) => {
+    const now = new Date();
+    const filename = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}-${String(now.getMinutes()).padStart(2,'0')}-${String(now.getSeconds()).padStart(2,'0')}.png`;
+    const { data, error } = await supabase.storage.from(BUCKET).upload(filename, blob, { contentType: 'image/png' });
+    if (error) console.error('Supabase upload error:', error);
+    else console.log('Uploaded:', data);
+  }, 'image/png');
 });
 
 let uploadedImageUrl = null;

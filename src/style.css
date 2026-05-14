@@ -71,6 +71,22 @@ body {
   pointer-events: none;
 }
 
+#canvas-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  pointer-events: none;
+}
+
+.canvas-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  pointer-events: none;
+}
+
 #canvas-label {
   font-family: var(--font-pixel);
   font-size: 22px;
@@ -105,8 +121,6 @@ body {
 .redo,
 .eye-toggle,
 .save-btn {
-  position: absolute;
-  right: var(--spacing-md);
   pointer-events: all;
   width: var(--btn-icon-size);
   height: var(--btn-icon-size);
@@ -114,6 +128,7 @@ body {
   border: none;
   cursor: pointer;
   transition: transform var(--transition-ui);
+  z-index: 1;
 }
 
 .upload-btn {
@@ -135,18 +150,7 @@ body {
 }
 
 .redo {
-  top: var(--spacing-md);
-  right: auto;
-  left: var(--spacing-md);
   rotate: 110deg;
-}
-
-.eye-toggle {
-  top: var(--spacing-md);
-}
-
-.save-btn {
-  top: calc(var(--spacing-md) + var(--btn-icon-size) + 12px);
 }
 
 .upload-btn:hover {

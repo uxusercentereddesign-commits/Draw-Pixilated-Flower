@@ -13,13 +13,18 @@
     <div id="canvas">
      <h1 id="canvas-label">Where Pixels Bloom</h1>
      <div id="drawing-wrapper">
-      <div id="canvas-box" class="image-hidden">
-        <button class="redo"><i class="ph-bold ph-arrow-counter-clockwise"></i></button>
-        <button class="eye-toggle">
-          <i class="ph-bold ph-eye-slash"></i>
-          <i class="ph-bold ph-eye"></i>
-        </button>
-        <button class="save-btn" disabled><i class="ph-bold ph-download-simple"></i></button>
+      <div id="canvas-row">
+        <div class="canvas-side left">
+          <button class="redo"><i class="ph-bold ph-arrow-counter-clockwise"></i></button>
+        </div>
+        <div id="canvas-box" class="image-hidden"></div>
+        <div class="canvas-side right">
+          <button class="eye-toggle">
+            <i class="ph-bold ph-eye-slash"></i>
+            <i class="ph-bold ph-eye"></i>
+          </button>
+          <button class="save-btn" disabled><i class="ph-bold ph-download-simple"></i></button>
+        </div>
       </div>
       <div id="palette">
         <button class="swatch active"></button>
@@ -34,6 +39,6 @@
 <div id="device-block" aria-hidden="true">
       <p>Open this link on a<br>laptop to draw</p>
     </div>
-    <script src="main.js"></script>
+    <script type="module" src="main.js"></script>
   </body>
 </html>
