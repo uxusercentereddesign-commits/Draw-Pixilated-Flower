@@ -1,4 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
+import { inject } from '@vercel/speed-insights';
+
+inject();
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
