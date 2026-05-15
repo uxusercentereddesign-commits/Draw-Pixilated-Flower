@@ -10,6 +10,8 @@ A browser-based pixel drawing app. Works on laptop/desktop only — screens narr
 - [Phosphor Icons](https://phosphoricons.com/) (web bundle)
 - [Pixelify Sans](https://fonts.google.com/specimen/Pixelify+Sans) (Google Fonts)
 - Vite (dev server, build, preview)
+- Supabase (drawing uploads)
+- Vercel Speed Insights
 
 ## Running locally
 
@@ -37,10 +39,11 @@ Clicking or dragging inside the canvas area paints `div.pixel` elements (16×16 
 |---------|-------------|
 | Click / drag | Paint pixels |
 | Color swatches | Select active color (5 colors) |
+| Shade palette | Select a darker or lighter shade of the active color |
 | Clear button (↺) | Removes all painted pixels |
-| Cmd+Z (Mac / iOS) · Ctrl+Z (Windows) | Undo one pixel at a time |
+| Cmd+Z (Mac) · Ctrl+Z (Windows) | Undo one pixel at a time |
 | Eye toggle | Show / hide the reference image |
-| Download button | Saves the canvas area as `drawing.png` |
+| Download button | Saves the canvas as `drawing.png` (2× scale, 1200×1200px) |
 | "Add a reference image" | Upload a local image to use as a tracing guide |
 
 The download button is disabled until at least one pixel is painted.
@@ -57,9 +60,15 @@ Colors are defined as CSS custom properties in `:root` and read by JS via `getCo
 | `--color-4` | `#F0A878` |
 | `--color-5` | `#4A90D9` |
 
+### Shade palette
+
+Below the main color palette is a shade palette (`#shade-palette`) showing 5 solid shades of the active color — from darkest to lightest (left to right). Shades are computed by mixing the base color with black or white. No transparency is used.
+
+Clicking a shade swatch paints with that shade. The shade palette updates whenever a new main color is selected. The base color swatch (`swatch-500`) is automatically marked active when a main color is selected.
+
 ### Reference image
 
-`#canvas-box::before` renders a reference image at 30% opacity. The default is `flower image.png` (bundled in the repo). Uploading a file via the button replaces it with an object URL; toggling the eye button sets opacity to 0 via the `.image-hidden` class.
+`#canvas-box::before` renders a reference image at 30% opacity. The default is `flower image.png` (bundled in `public/`). Uploading a file via the button replaces it with an object URL; toggling the eye button sets opacity to 0 via the `.image-hidden` class.
 
 ### Cursor
 
@@ -67,16 +76,18 @@ The active cursor is a paint-bucket SVG with a color-filled drop that matches th
 
 ### Save
 
-Clicking the download button renders all `.pixel` elements onto an offscreen `<canvas>` sized to the canvas-box dimensions and triggers a download of `drawing.png` as a PNG.
+Clicking the download button renders all `.pixel` elements onto an offscreen `<canvas>` at 2× scale (1200×1200px) and triggers a download of `drawing.png`. The same canvas blob is also uploaded to Supabase storage with a timestamp filename.
 
 ## File structure
 
 ```
-index.html                    — markup (includes Open Graph + Twitter Card meta tags)
-main.js                       — all JS logic
-src/style.css                 — all styles and CSS variables
-flower image.png              — default reference image
-Union.png                     — mask shape used for color swatches
-Pixlated flower.png           — favicon (64×64)
-Pixlated flower large size.png — OG/Twitter share image
+index.html          — markup (includes Open Graph + Twitter Card meta tags)
+main.js             — all JS logic
+src/style.css       — all styles and CSS variables
+vercel.json         — build config for Vercel
+public/
+  og-image.png          — OG/Twitter share image (1200×630px)
+  Pixlated flower.png   — favicon (64×64)
+  flower image.png      — default reference image
+  Union.png             — mask shape used for color swatches
 ```
