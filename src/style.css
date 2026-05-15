@@ -60,7 +60,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-lg) 0;
+  padding: var(--spacing-lg) 0 48px;
   pointer-events: none;
 }
 
