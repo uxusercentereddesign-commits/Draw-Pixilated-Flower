@@ -95,9 +95,10 @@ document.addEventListener('mouseup', () => {
 
 saveBtnEl.addEventListener('click', () => {
   const size = Math.round(canvasRect.width);
+  const scale = 2;
   const offscreen = document.createElement('canvas');
-  offscreen.width = size;
-  offscreen.height = size;
+  offscreen.width = size * scale;
+  offscreen.height = size * scale;
   const ctx = offscreen.getContext('2d');
 
   grid.querySelectorAll('.pixel').forEach(cell => {
@@ -105,7 +106,7 @@ saveBtnEl.addEventListener('click', () => {
     const y = parseFloat(cell.style.top) - canvasRect.top;
     if (x < 0 || y < 0 || x >= size || y >= size) return;
     ctx.fillStyle = cell.style.background;
-    ctx.fillRect(x, y, CELL, CELL);
+    ctx.fillRect(x * scale, y * scale, CELL * scale, CELL * scale);
   });
 
   const a = document.createElement('a');
