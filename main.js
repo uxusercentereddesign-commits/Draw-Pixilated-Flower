@@ -42,15 +42,59 @@ window.addEventListener('resize', () => {
 const history = [];
 let isPainting = false;
 const painted = new Set();
-let activeColor = getSwatchColor(document.querySelector('.swatch.active'));
+let baseColor = getSwatchColor(document.querySelector('.swatch.active'));
+let activeColor = baseColor;
+
+const opacitySwatches = document.querySelectorAll('[class^="swatch-"]');
+
+const shadeColor = (hex, factor) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  if (factor >= 0) {
+    return `rgb(${Math.round(r + (255 - r) * factor)},${Math.round(g + (255 - g) * factor)},${Math.round(b + (255 - b) * factor)})`;
+  } else {
+    const d = 1 + factor;
+    return `rgb(${Math.round(r * d)},${Math.round(g * d)},${Math.round(b * d)})`;
+  }
+};
+
+// positive = lighten (mix white), negative = darken (mix black)
+// order: lightest → lighter → base → darker → darkest
+const SHADES = [-0.6, -0.35, 0, 0.2, 0.45];
+
+const updateOpacityPalette = (hex) => {
+  opacitySwatches.forEach((swatch, i) => {
+    swatch.style.setProperty('--opacity-color', shadeColor(hex, SHADES[i]));
+  });
+};
+
+const BASE_SHADE_INDEX = SHADES.indexOf(0);
+
+updateOpacityPalette(baseColor);
+opacitySwatches[BASE_SHADE_INDEX].classList.add('active');
 
 document.getElementById('palette').addEventListener('click', (e) => {
   const swatch = e.target.closest('.swatch');
   if (!swatch) return;
   swatches.forEach(s => s.classList.remove('active'));
   swatch.classList.add('active');
-  activeColor = getSwatchColor(swatch);
-  grid.style.cursor = buildCursor(activeColor);
+  opacitySwatches.forEach(s => s.classList.remove('active'));
+  opacitySwatches[BASE_SHADE_INDEX].classList.add('active');
+  baseColor = getSwatchColor(swatch);
+  activeColor = baseColor;
+  grid.style.cursor = buildCursor(baseColor);
+  updateOpacityPalette(baseColor);
+});
+
+document.getElementById('opacity-palette').addEventListener('click', (e) => {
+  const swatch = e.target.closest('[class^="swatch-"]');
+  if (!swatch) return;
+  opacitySwatches.forEach(s => s.classList.remove('active'));
+  swatch.classList.add('active');
+  const i = [...opacitySwatches].indexOf(swatch);
+  activeColor = shadeColor(baseColor, SHADES[i]);
+  grid.style.cursor = buildCursor(baseColor);
 });
 
 const paintCell = (clientX, clientY) => {

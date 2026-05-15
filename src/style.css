@@ -215,6 +215,56 @@ body {
   padding: 8px var(--spacing-md);
 }
 
+#opacity-palette {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: 4px var(--spacing-md) 8px;
+}
+
+[class^="swatch-"] {
+  width: 36px;
+  height: 36px;
+  border: none;
+  cursor: pointer;
+  pointer-events: all;
+  position: relative;
+  transition: transform var(--transition-ui);
+  background: transparent;
+}
+
+[class^="swatch-"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--opacity-color);
+  mask-image: url('../Union.png');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+
+[class^="swatch-"].active::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: var(--ink);
+  mask-image: url('../Union.png');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  z-index: -1;
+}
+
+[class^="swatch-"].active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [class^="swatch-"]:hover { transform: scale(1.05); }
+}
+
+[class^="swatch-"]:active { transform: scale(0.95); }
+
 .swatch {
   width: 48px;
   height: 48px;
