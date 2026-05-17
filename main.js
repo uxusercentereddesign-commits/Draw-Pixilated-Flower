@@ -19,6 +19,7 @@ const swatches = document.querySelectorAll('.swatch');
 
 const CELL = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--grid-size'), 10);
 const rootStyle = getComputedStyle(document.documentElement);
+const inkHex = rootStyle.getPropertyValue('--ink').trim().replace('#', '%23');
 
 const getSwatchColor = (swatch) => {
   const index = [...swatches].indexOf(swatch) + 1;
@@ -30,7 +31,7 @@ const DROP_PATH = 'M238.66,163.52a8,8,0,0,0-13.32,0C223.57,166.23,208,190.09,208
 
 const buildCursor = (color) => {
   const fill = color.replace('#', '%23');
-  return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' width='18' height='18'%3E%3Cg transform='translate(256,0) scale(-1,1)'%3E%3Cpath fill='%23222222' d='${BUCKET_PATH}'/%3E%3Cg transform='translate(232,186) scale(1.5) translate(-232,-186)'%3E%3Cpath fill='${fill}' d='${DROP_PATH}'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") 2 20, crosshair`;
+  return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' width='18' height='18'%3E%3Cg transform='translate(256,0) scale(-1,1)'%3E%3Cpath fill='${inkHex}' d='${BUCKET_PATH}'/%3E%3Cg transform='translate(232,186) scale(1.5) translate(-232,-186)'%3E%3Cpath fill='${fill}' d='${DROP_PATH}'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") 2 20, crosshair`;
 };
 
 let canvasRect = canvasBox.getBoundingClientRect();
@@ -42,41 +43,36 @@ window.addEventListener('resize', () => {
 const history = [];
 let isPainting = false;
 const painted = new Set();
+const shadeSwatches = document.querySelectorAll('[class^="swatch-"]');
+const shadePaletteEl = document.getElementById('shade-palette');
+const BASE_SHADE_INDEX = 2;
+
+let activeColorIndex = [...swatches].indexOf(document.querySelector('.swatch.active')) + 1;
 let baseColor = getSwatchColor(document.querySelector('.swatch.active'));
 let activeColor = baseColor;
 
-const shadeSwatches = document.querySelectorAll('[class^="swatch-"]');
+const SHADE_NAMES = [700, 500, 300, 100];
 
-const shadeColor = (hex, factor) => {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  if (factor >= 0) {
-    return `rgb(${Math.round(r + (255 - r) * factor)},${Math.round(g + (255 - g) * factor)},${Math.round(b + (255 - b) * factor)})`;
-  } else {
-    const d = 1 + factor;
-    return `rgb(${Math.round(r * d)},${Math.round(g * d)},${Math.round(b * d)})`;
+const getShadeColor = (colorIndex, shadeIndex) =>
+  rootStyle.getPropertyValue(`--color-${colorIndex}-${SHADE_NAMES[shadeIndex]}`).trim();
+
+let prevColorIndex = null;
+let lastMoveLeft = false;
+
+const updateShadePalette = (colorIndex) => {
+  if (prevColorIndex !== null && colorIndex !== prevColorIndex) {
+    lastMoveLeft = colorIndex < prevColorIndex;
   }
-};
+  prevColorIndex = colorIndex;
+  const movingLeft = lastMoveLeft;
 
-// positive = lighten (mix white), negative = darken (mix black)
-// order: lightest → lighter → base → darker → darkest
-const SHADES = [-0.6, -0.35, 0, 0.2, 0.45];
-
-const shadePaletteEl = document.getElementById('shade-palette');
-
-const updateOpacityPalette = (hex) => {
   shadePaletteEl.classList.remove('animating');
+  shadePaletteEl.classList.toggle('slide-left', movingLeft);
   void shadePaletteEl.offsetWidth;
-  shadeSwatches.forEach((swatch, i) => {
-    swatch.style.setProperty('--shade-color', shadeColor(hex, SHADES[i]));
-  });
   shadePaletteEl.classList.add('animating');
 };
 
-const BASE_SHADE_INDEX = SHADES.indexOf(0);
-
-updateOpacityPalette(baseColor);
+updateShadePalette(activeColorIndex);
 shadeSwatches[BASE_SHADE_INDEX].classList.add('active');
 
 document.getElementById('palette').addEventListener('click', (e) => {
@@ -86,10 +82,11 @@ document.getElementById('palette').addEventListener('click', (e) => {
   swatch.classList.add('active');
   shadeSwatches.forEach(s => s.classList.remove('active'));
   shadeSwatches[BASE_SHADE_INDEX].classList.add('active');
+  activeColorIndex = [...swatches].indexOf(swatch) + 1;
   baseColor = getSwatchColor(swatch);
   activeColor = baseColor;
   grid.style.cursor = buildCursor(baseColor);
-  updateOpacityPalette(baseColor);
+  updateShadePalette(activeColorIndex);
 });
 
 document.getElementById('shade-palette').addEventListener('click', (e) => {
@@ -98,7 +95,7 @@ document.getElementById('shade-palette').addEventListener('click', (e) => {
   shadeSwatches.forEach(s => s.classList.remove('active'));
   swatch.classList.add('active');
   const i = [...shadeSwatches].indexOf(swatch);
-  activeColor = shadeColor(baseColor, SHADES[i]);
+  activeColor = getShadeColor(activeColorIndex, i);
   grid.style.cursor = buildCursor(baseColor);
 });
 

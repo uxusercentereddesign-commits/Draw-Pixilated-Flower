@@ -19,12 +19,39 @@
   --spacing-md: 16px;
   --btn-icon-size: 28px;
 
-  --color-1: #E63946;
-  --color-2: #DCE9F5;
-  --color-3: #F4C430;
-  --color-4: #F4A7B9;
-  --color-5: #4A8C3F; 
-  
+  --active-outline: #000000;
+
+  /* Shades: 700=darkest → 100=lightest */
+  --color-1-700: #B01E2A;
+  --color-1-500: #E63946;
+  --color-1-300: #F07A86;
+  --color-1-100: #F5A8B0;
+
+  --color-2-700: #4A7FD4;
+  --color-2-500: #6495ED;
+  --color-2-300: #94B8F5;
+  --color-2-100: #D0E2FC;
+
+  --color-3-700: #C4A030;
+  --color-3-500: #F4C430;
+  --color-3-300: #F8D870;
+  --color-3-100: #FBE9A8;
+
+  --color-4-700: #7040B8;
+  --color-4-500: #9B6FD4;
+  --color-4-300: #C4A0E8;
+  --color-4-100: #E8D8F8;
+
+  --color-5-700: #2F5828;
+  --color-5-500: #4A8C3F;
+  --color-5-300: #6EA365;
+  --color-5-100: #9BC095;
+
+  --color-1: var(--color-1-300);
+  --color-2: var(--color-2-300);
+  --color-3: var(--color-3-300);
+  --color-4: var(--color-4-300);
+  --color-5: var(--color-5-300);
 }
 
 body {
@@ -40,9 +67,17 @@ body {
   width: 100vw;
   height: 100vh;
   background-image:
-    linear-gradient(var(--grid-color) .5px, transparent .5px),
-    linear-gradient(90deg, var(--grid-color) .5px, transparent .5px);
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
   background-size: var(--grid-size) var(--grid-size);
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  #grid {
+    background-image:
+      linear-gradient(var(--grid-color) .5px, transparent .5px),
+      linear-gradient(90deg, var(--grid-color) .5px, transparent .5px);
+  }
 }
 
 
@@ -97,7 +132,6 @@ body {
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--ink);
-  opacity: 1;
   white-space: nowrap;
   z-index: 1;
 }
@@ -243,8 +277,40 @@ body {
 #shade-palette.animating [class^="swatch-"]:nth-child(2) { animation-delay: 35ms; }
 #shade-palette.animating [class^="swatch-"]:nth-child(3) { animation-delay: 70ms; }
 #shade-palette.animating [class^="swatch-"]:nth-child(4) { animation-delay: 105ms; }
-#shade-palette.animating [class^="swatch-"]:nth-child(5) { animation-delay: 140ms; }
 
+/* Moving left → stagger right-to-left */
+#shade-palette.slide-left.animating [class^="swatch-"]:nth-child(1) { animation-delay: 105ms; }
+#shade-palette.slide-left.animating [class^="swatch-"]:nth-child(2) { animation-delay: 70ms; }
+#shade-palette.slide-left.animating [class^="swatch-"]:nth-child(3) { animation-delay: 35ms; }
+#shade-palette.slide-left.animating [class^="swatch-"]:nth-child(4) { animation-delay: 0ms; }
+
+/* Shade colors per active main swatch */
+#palette-wrapper:has(.swatch:nth-child(1).active) .swatch-700 { --shade-color: var(--color-1-700); }
+#palette-wrapper:has(.swatch:nth-child(1).active) .swatch-500 { --shade-color: var(--color-1-500); }
+#palette-wrapper:has(.swatch:nth-child(1).active) .swatch-300 { --shade-color: var(--color-1-300); }
+#palette-wrapper:has(.swatch:nth-child(1).active) .swatch-100 { --shade-color: var(--color-1-100); }
+
+#palette-wrapper:has(.swatch:nth-child(2).active) .swatch-700 { --shade-color: var(--color-2-700); }
+#palette-wrapper:has(.swatch:nth-child(2).active) .swatch-500 { --shade-color: var(--color-2-500); }
+#palette-wrapper:has(.swatch:nth-child(2).active) .swatch-300 { --shade-color: var(--color-2-300); }
+#palette-wrapper:has(.swatch:nth-child(2).active) .swatch-100 { --shade-color: var(--color-2-100); }
+
+#palette-wrapper:has(.swatch:nth-child(3).active) .swatch-700 { --shade-color: var(--color-3-700); }
+#palette-wrapper:has(.swatch:nth-child(3).active) .swatch-500 { --shade-color: var(--color-3-500); }
+#palette-wrapper:has(.swatch:nth-child(3).active) .swatch-300 { --shade-color: var(--color-3-300); }
+#palette-wrapper:has(.swatch:nth-child(3).active) .swatch-100 { --shade-color: var(--color-3-100); }
+
+#palette-wrapper:has(.swatch:nth-child(4).active) .swatch-700 { --shade-color: var(--color-4-700); }
+#palette-wrapper:has(.swatch:nth-child(4).active) .swatch-500 { --shade-color: var(--color-4-500); }
+#palette-wrapper:has(.swatch:nth-child(4).active) .swatch-300 { --shade-color: var(--color-4-300); }
+#palette-wrapper:has(.swatch:nth-child(4).active) .swatch-100 { --shade-color: var(--color-4-100); }
+
+#palette-wrapper:has(.swatch:nth-child(5).active) .swatch-700 { --shade-color: var(--color-5-700); }
+#palette-wrapper:has(.swatch:nth-child(5).active) .swatch-500 { --shade-color: var(--color-5-500); }
+#palette-wrapper:has(.swatch:nth-child(5).active) .swatch-300 { --shade-color: var(--color-5-300); }
+#palette-wrapper:has(.swatch:nth-child(5).active) .swatch-100 { --shade-color: var(--color-5-100); }
+
+/* translateX: centers shade palette under the active main swatch */
 #palette-wrapper:has(.swatch:nth-child(1).active) #shade-palette { transform: translateX(-128px); }
 #palette-wrapper:has(.swatch:nth-child(2).active) #shade-palette { transform: translateX(-64px); }
 #palette-wrapper:has(.swatch:nth-child(3).active) #shade-palette { transform: translateX(0px); }
@@ -276,8 +342,8 @@ body {
 [class^="swatch-"].active::after {
   content: '';
   position: absolute;
-  inset: -2px;
-  background: var(--ink);
+  inset: -1.2px;
+  background: var(--active-outline);
   mask-image: url('../Union.png');
   mask-size: contain;
   mask-repeat: no-repeat;
