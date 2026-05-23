@@ -72,15 +72,25 @@ Component   →  element tokens    (--canvas-size, --flower-height-1 …)
 
 Below the main palette is a shade row showing 4 shades of the active color (darkest → lightest). It slides to center under the active swatch and animates in with a stagger. Clicking a shade paints with that shade. The mid-light shade (300) is auto-selected when switching colors.
 
-Active color state is driven by `data-active-color` on `#palette-wrapper` — set by JS on every swatch click. CSS reads this attribute directly; no `:has()` or `:nth-child` selectors are used for logic.
+Active color state is driven by `data-active-color` on `.palette` — set by JS on every swatch click. CSS reads this attribute directly; no `:has()` or `:nth-child` selectors are used for logic. Selected swatch/shade state is tracked via `data-active="true"` (data attribute, not a class).
 
 ### Reference image overlay
 
-`#canvas-box::before` renders an image at 30% opacity. The default is `flower image.png` (in `public/`). Uploading via the button replaces it with an object URL set as `--canvas-bg-image`. The eye toggle sets opacity to 0 via the `.image-hidden` class.
+`#canvas-box::before` renders an image at 30% opacity. The default is `flower image.png` (in `public/`). Uploading via the button replaces it with an object URL set as `--canvas-bg-image`. The eye toggle controls visibility via `data-visible="false"` on `#canvas-box` and `data-state="open"` on the toggle button.
 
 ### Corner flower decorations
 
 Pixel-art flower PNGs are fixed to the bottom-left and bottom-right corners. Each flower has a `data-flower` attribute (`l1–l4`, `r1–r3`) that drives its individual height, gap, flip, and rotation via CSS tokens in `:root`. A wind sway animation (`wind-sway-1` through `wind-sway-4`) runs continuously with staggered delays to simulate a breeze.
+
+**Flower positioning tokens:**
+
+| Token | Controls |
+|-------|----------|
+| `--flower-height-{id}` | Height of each flower |
+| `--flower-edge-l1` | Gap between l1 and the left screen edge |
+| `--flower-gap-l{n}` | `margin-right` on ln (gap to the next flower) |
+| `--flower-gap-r{n}` | `margin-left` on rn (gap from the previous flower) |
+| `--flower-edge-r3` | Gap between r3 and the right screen edge |
 
 ### Cursor
 
@@ -89,6 +99,31 @@ A paint-bucket SVG with a color-filled drop matching the active swatch color. Re
 ### Save
 
 Renders all `.pixel` elements onto an offscreen `<canvas>` at 2× scale and triggers a `drawing.png` download. The same blob is uploaded to Supabase storage with a timestamp filename.
+
+## Naming conventions
+
+### Classes — BEM-lite
+All classes follow `.block__element` and `.block__element--modifier`. Reusable UI primitives (e.g. `.icon-button`) are standalone blocks, not children of wherever they first appear.
+
+### State — data attributes
+Element state is tracked via data attributes, not class names:
+
+| State | Attribute |
+|-------|-----------|
+| Canvas image visible | `data-visible="true/false"` on `#canvas-box` |
+| Eye toggle open | `data-state="open"` on `.icon-button--visibility` |
+| Active swatch / shade | `data-active="true"` on `.palette__swatch` / `.palette__shade` |
+| Active color | `data-active-color="1–5"` on `.palette` |
+
+Exception: transient animation-trigger classes (`.animating`, `.slide-left`) remain as classes — they're added, used for a reflow, then removed immediately.
+
+### Tokens — three levels
+```
+Primitives  →  raw named values  (--primitive-red-300: #F07A86)
+Semantic    →  purpose aliases   (--color-1-300: var(--primitive-red-300))
+Component   →  element tokens    (--canvas-size, --flower-height-1 …)
+```
+Only repeated decisions are tokenized. Single-use values are inlined at the level that consumes them.
 
 ## CSS architecture
 
@@ -122,5 +157,5 @@ public/
   left4.png
   right1.png            — corner flower (bottom-right)
   right2.png
-  right 3.png
+  right3.png
 ```
