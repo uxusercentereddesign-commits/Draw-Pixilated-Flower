@@ -1,4 +1,4 @@
-# Draw Pixilated Flower
+# Draw Pixelated Flower
 
 **Live:** https://pixelatedflower.vercel.app/
 
