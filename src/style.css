@@ -120,17 +120,9 @@
   --flower-height-3:  130px;
   --flower-height-4:  95px;
   --flower-height-r1: 90px;
-  --flower-height-r2: 135px;
+  --flower-height-r2: 115px;
   --flower-height-r3: 240px;
 
-  /* ── Component: Flowers — gaps (negative = overlap) ── */
-  --flower-edge-l1:   0px;
-  --flower-gap-l1: -100px;
-  --flower-gap-l2: -20px;
-  --flower-gap-l3: -40px;
-  --flower-gap-r2: -64px;
-  --flower-gap-r3: -60px;
-  --flower-edge-r3: -10px;
 
 }
 
@@ -393,14 +385,23 @@ body {
   transform-origin: bottom center;
 }
 
-.flowers__img[data-flower="l1"] { height: var(--flower-height-1); margin-left: var(--flower-edge-l1); margin-right: var(--flower-gap-l1); }
-.flowers__img[data-flower="l2"] { height: var(--flower-height-2);  margin-right: var(--flower-gap-l2); }
-.flowers__img[data-flower="l3"] { height: var(--flower-height-3);  margin-right: var(--flower-gap-l3); scale: -1 1; }
-.flowers__img[data-flower="l4"] { height: var(--flower-height-4);  scale: -1 1; }
+/* Gap travels with the element — set --gap inline on each <img> in HTML */
+.flowers--left  .flowers__img { margin-right: var(--gap, 0px); }
+.flowers--right .flowers__img { margin-left:  var(--gap, 0px); }
+
+/* Edge offset from screen — set --edge inline on the first/last flower */
+.flowers--left  .flowers__img:first-child { margin-left:  var(--edge, 0px); }
+.flowers--right .flowers__img:last-child  { margin-right: var(--edge, 0px); }
+
+/* Per-flower: height, flip, rotation only */
+.flowers__img[data-flower="l1"] { height: var(--flower-height-1); }
+.flowers__img[data-flower="l2"] { height: var(--flower-height-2); }
+.flowers__img[data-flower="l3"] { height: var(--flower-height-3); scale: -1 1; }
+.flowers__img[data-flower="l4"] { height: var(--flower-height-4); scale: -1 1; }
 
 .flowers__img[data-flower="r1"] { height: var(--flower-height-r1); }
-.flowers__img[data-flower="r2"] { height: var(--flower-height-r2); margin-left: var(--flower-gap-r2); }
-.flowers__img[data-flower="r3"] { height: var(--flower-height-r3); margin-left: var(--flower-gap-r3); margin-right: var(--flower-edge-r3); rotate: 0deg; }
+.flowers__img[data-flower="r2"] { height: var(--flower-height-r2); }
+.flowers__img[data-flower="r3"] { height: var(--flower-height-r3); scale: -1 1; }
 
 .flowers__img--wind-a { animation: wind-sway-1 4.2s ease-out infinite; }
 .flowers__img--wind-b { animation: wind-sway-2 3.7s ease-out infinite 0.6s; }
