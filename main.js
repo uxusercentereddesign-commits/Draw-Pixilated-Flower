@@ -11,18 +11,19 @@ const BUCKET = import.meta.env.VITE_SUPABASE_BUCKET;
 
 const grid = document.getElementById('grid');
 const canvasBox = document.getElementById('canvas-box');
-const clearBtn = document.querySelector('.redo');
-const eyeToggleBtn = document.querySelector('.eye-toggle');
-const saveBtnEl = document.querySelector('.save-btn');
-const uploadBtn = document.querySelector('.upload-btn');
-const swatches = document.querySelectorAll('.swatch');
+const clearBtn = document.querySelector('.icon-button--undo');
+const eyeToggleBtn = document.querySelector('.icon-button--visibility');
+const saveBtnEl = document.querySelector('.icon-button--download');
+const uploadBtn = document.querySelector('.controls__upload');
+const swatches = document.querySelectorAll('.palette__swatch');
+const paletteWrapper = document.querySelector('.palette');
 
 const CELL = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--grid-size'), 10);
 const rootStyle = getComputedStyle(document.documentElement);
-const inkHex = rootStyle.getPropertyValue('--ink').trim().replace('#', '%23');
+const inkHex = rootStyle.getPropertyValue('--color-ink').trim().replace('#', '%23');
 
 const getSwatchColor = (swatch) => {
-  const index = [...swatches].indexOf(swatch) + 1;
+  const index = swatch.dataset.color;
   return rootStyle.getPropertyValue(`--color-${index}`).trim();
 };
 
@@ -43,18 +44,15 @@ window.addEventListener('resize', () => {
 const history = [];
 let isPainting = false;
 const painted = new Set();
-const shadeSwatches = document.querySelectorAll('[class^="swatch-"]');
-const shadePaletteEl = document.getElementById('shade-palette');
-const BASE_SHADE_INDEX = 2;
+const shadeSwatches = document.querySelectorAll('.palette__shade');
+const shadePaletteEl = document.querySelector('.palette__shades');
 
-let activeColorIndex = [...swatches].indexOf(document.querySelector('.swatch.active')) + 1;
-let baseColor = getSwatchColor(document.querySelector('.swatch.active'));
+let activeColorIndex = parseInt(document.querySelector('.palette__swatch[data-active="true"]').dataset.color);
+let baseColor = getSwatchColor(document.querySelector('.palette__swatch[data-active="true"]'));
 let activeColor = baseColor;
 
-const SHADE_NAMES = [700, 500, 300, 100];
-
-const getShadeColor = (colorIndex, shadeIndex) =>
-  rootStyle.getPropertyValue(`--color-${colorIndex}-${SHADE_NAMES[shadeIndex]}`).trim();
+const getShadeColor = (colorIndex, level) =>
+  rootStyle.getPropertyValue(`--color-${colorIndex}-${level}`).trim();
 
 let prevColorIndex = null;
 let lastMoveLeft = false;
@@ -73,29 +71,29 @@ const updateShadePalette = (colorIndex) => {
 };
 
 updateShadePalette(activeColorIndex);
-shadeSwatches[BASE_SHADE_INDEX].classList.add('active');
+document.querySelector('.palette__shade[data-level="300"]').dataset.active = 'true';
 
-document.getElementById('palette').addEventListener('click', (e) => {
-  const swatch = e.target.closest('.swatch');
+document.querySelector('.palette__swatches').addEventListener('click', (e) => {
+  const swatch = e.target.closest('.palette__swatch');
   if (!swatch) return;
-  swatches.forEach(s => s.classList.remove('active'));
-  swatch.classList.add('active');
-  shadeSwatches.forEach(s => s.classList.remove('active'));
-  shadeSwatches[BASE_SHADE_INDEX].classList.add('active');
-  activeColorIndex = [...swatches].indexOf(swatch) + 1;
+  swatches.forEach(s => delete s.dataset.active);
+  swatch.dataset.active = 'true';
+  shadeSwatches.forEach(s => delete s.dataset.active);
+  document.querySelector('.palette__shade[data-level="300"]').dataset.active = 'true';
+  activeColorIndex = parseInt(swatch.dataset.color);
+  paletteWrapper.dataset.activeColor = activeColorIndex;
   baseColor = getSwatchColor(swatch);
-  activeColor = baseColor;
+  activeColor = getShadeColor(activeColorIndex, '300');
   grid.style.cursor = buildCursor(baseColor);
   updateShadePalette(activeColorIndex);
 });
 
-document.getElementById('shade-palette').addEventListener('click', (e) => {
-  const swatch = e.target.closest('[class^="swatch-"]');
+document.querySelector('.palette__shades').addEventListener('click', (e) => {
+  const swatch = e.target.closest('.palette__shade');
   if (!swatch) return;
-  shadeSwatches.forEach(s => s.classList.remove('active'));
-  swatch.classList.add('active');
-  const i = [...shadeSwatches].indexOf(swatch);
-  activeColor = getShadeColor(activeColorIndex, i);
+  shadeSwatches.forEach(s => delete s.dataset.active);
+  swatch.dataset.active = 'true';
+  activeColor = getShadeColor(activeColorIndex, swatch.dataset.level);
   grid.style.cursor = buildCursor(baseColor);
 });
 
@@ -181,15 +179,16 @@ uploadBtn.addEventListener('click', () => {
     if (uploadedImageUrl) URL.revokeObjectURL(uploadedImageUrl);
     uploadedImageUrl = URL.createObjectURL(file);
     canvasBox.style.setProperty('--canvas-bg-image', `url("${uploadedImageUrl}")`);
-    canvasBox.classList.remove('image-hidden');
-    eyeToggleBtn.classList.add('eye-open');
+    canvasBox.dataset.visible = 'true';
+    eyeToggleBtn.dataset.state = 'open';
   };
   input.click();
 });
 
 eyeToggleBtn.addEventListener('click', () => {
-  const hidden = canvasBox.classList.toggle('image-hidden');
-  eyeToggleBtn.classList.toggle('eye-open', !hidden);
+  const isVisible = canvasBox.dataset.visible === 'true';
+  canvasBox.dataset.visible = isVisible ? 'false' : 'true';
+  eyeToggleBtn.dataset.state = isVisible ? '' : 'open';
 });
 
 clearBtn.addEventListener('click', () => {

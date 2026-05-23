@@ -26,51 +26,52 @@
   <body>
     <div id="grid"></div>
     <div id="canvas">
-     <h1 id="canvas-label">Where Pixels Bloom</h1>
-     <div id="drawing-wrapper">
-      <div id="canvas-row">
-        <div class="canvas-side left">
-          <button class="redo"><i class="ph-bold ph-arrow-counter-clockwise"></i></button>
+     <h1 class="canvas__label">Where Pixels Bloom</h1>
+     <div class="canvas__wrapper">
+      <div class="canvas__row">
+        <div class="canvas__controls canvas__controls--left">
+          <button class="icon-button icon-button--undo"><i class="ph-bold ph-arrow-counter-clockwise"></i></button>
         </div>
-        <div id="canvas-box" class="image-hidden"></div>
-        <div class="canvas-side right">
-          <button class="eye-toggle">
+        <div id="canvas-box" data-visible="false"></div>
+        <div class="canvas__controls canvas__controls--right">
+          <button class="icon-button icon-button--visibility">
             <i class="ph-bold ph-eye-slash"></i>
             <i class="ph-bold ph-eye"></i>
           </button>
-          <button class="save-btn" disabled><i class="ph-bold ph-download-simple"></i></button>
+          <button class="icon-button icon-button--download" disabled><i class="ph-bold ph-download-simple"></i></button>
         </div>
       </div>
-      <div id="palette-wrapper">
-        <div id="palette">
-          <button class="swatch active"></button>
-          <button class="swatch"></button>
-          <button class="swatch"></button>
-          <button class="swatch"></button>
-          <button class="swatch"></button>
+      <div class="palette" data-active-color="1">
+        <div class="palette__swatches">
+          <button class="palette__swatch" data-color="1" data-active="true"></button>
+          <button class="palette__swatch" data-color="2"></button>
+          <button class="palette__swatch" data-color="3"></button>
+          <button class="palette__swatch" data-color="4"></button>
+          <button class="palette__swatch" data-color="5"></button>
         </div>
-        <div id="shade-palette">
-          <button class="swatch-700"></button>
-          <button class="swatch-500"></button>
-          <button class="swatch-300"></button>
-          <button class="swatch-100"></button>
+        <div class="palette__shades">
+          <button class="palette__shade" data-level="700" data-stagger="1"></button>
+          <button class="palette__shade" data-level="500" data-stagger="2"></button>
+          <button class="palette__shade" data-level="300" data-stagger="3"></button>
+          <button class="palette__shade" data-level="100" data-stagger="4"></button>
         </div>
       </div>
      </div>
-     <button class="upload-btn"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:12px;margin-bottom:1px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Reference Image</button>
+     <button class="controls__upload"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:12px;margin-bottom:1px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Reference Image</button>
     </div>
-<div class="corner-flowers corner-flowers--left" aria-hidden="true">
-  <img src="/left1.png" class="flower-img flower-wind-1" alt="">
-  <img src="/left2.png" class="flower-img flower-wind-2" alt="">
-  <img src="/left 3.png" class="flower-img flower-wind-3" alt="">
-  <img src="/left4.png" class="flower-img flower-wind-4" alt="">
+<div class="flowers flowers--left" aria-hidden="true">
+  <img src="/left1.png" class="flowers__img flowers__img--wind-a" data-flower="l1" alt="">
+  <img src="/left2.png" class="flowers__img flowers__img--wind-b" data-flower="l2" alt="">
+  <img src="/left 3.png" class="flowers__img flowers__img--wind-c" data-flower="l3" alt="">
+  <img src="/left4.png" class="flowers__img flowers__img--wind-d" data-flower="l4" alt="">
 </div>
-<div class="corner-flowers corner-flowers--right" aria-hidden="true">
-  <img src="/right1.png" class="flower-img flower-wind-2" alt="">
-  <img src="/right2.png" class="flower-img flower-wind-3" alt="">
+<div class="flowers flowers--right" aria-hidden="true">
+  <img src="/right1.png" class="flowers__img flowers__img--wind-b" data-flower="r1" alt="">
+  <img src="/right2.png" class="flowers__img flowers__img--wind-c" data-flower="r2" alt="">
+  <img src="/right3.png" class="flowers__img flowers__img--wind-c" data-flower="r3" alt="">
 </div>
 <div id="device-block" aria-hidden="true">
-      <p>Open this link on a<br>laptop to draw</p>
+      <p class="device-block__text">Open this link on a<br>laptop to draw</p>
     </div>
     <script type="module" src="main.js"></script>
   </body>
