@@ -1,6 +1,6 @@
 # Draw Pixilated Flower
 
-**Live:** https://draw-pixilated-flower.vercel.app/
+**Live:** https://pixelatedflower.vercel.app/
 
 A browser-based pixel drawing app. Works on laptop/desktop only — screens narrower than 800px or touch devices show a "Open this link on a laptop to draw" message.
 
