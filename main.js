@@ -126,8 +126,14 @@ const paintCell = (clientX, clientY) => {
   const y = Math.floor(clientY / CELL) * CELL;
   const key = `${x},${y}`;
 
-  if (painted.has(key) || pixelMap.has(key)) return;
+  if (painted.has(key)) return;
   painted.add(key);
+
+  const existing = pixelMap.get(key);
+  if (existing) {
+    existing.style.background = activeColor;
+    return;
+  }
 
   const cell = document.createElement('div');
   cell.className = 'pixel';
