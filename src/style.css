@@ -106,7 +106,7 @@
 
   /* ── Component: Canvas ── */
   --canvas-size: 600px;
-  --grid-size:   12px;
+  --grid-size:   16px;
 
   /* ── Component: Controls ── */
   --btn-icon-size: 28px;
@@ -178,7 +178,7 @@ body {
 .canvas__row {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--spacing-md);
   pointer-events: none;
   overflow: visible;
@@ -451,6 +451,8 @@ body {
 
 .icon-button--download:disabled   { cursor: not-allowed; pointer-events: all; }
 .icon-button--download:disabled i { opacity: 0.2; }
+
+.icon-button--eraser[data-state="active"] i { opacity: 1; }
 
 /* Upload */
 .controls__upload:hover  { opacity: 0.8; transform: scale(1.05); }
