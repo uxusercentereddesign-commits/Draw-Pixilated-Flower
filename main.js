@@ -132,7 +132,9 @@ const paintCell = (clientX, clientY) => {
 
   const existing = pixelMap.get(key);
   if (existing) {
+    const oldColor = existing.style.background;
     existing.style.background = activeColor;
+    currentStroke.push({ cell: existing, oldColor, key: null });
     return;
   }
 
@@ -140,7 +142,7 @@ const paintCell = (clientX, clientY) => {
   cell.className = 'pixel';
   cell.style.cssText = `left:${x}px;top:${y}px;background:${activeColor}`;
   grid.appendChild(cell);
-  currentStroke.push(cell);
+  currentStroke.push({ cell, oldColor: null, key });
   pixelMap.set(key, cell);
 
   if (pixelMap.size === 1) saveBtnEl.disabled = false;
@@ -159,7 +161,7 @@ const eraseCell = (clientX, clientY) => {
   cell.remove();
   pixelMap.delete(key);
   for (const stroke of history) {
-    const idx = stroke.indexOf(cell);
+    const idx = stroke.findIndex(e => e.cell === cell);
     if (idx !== -1) { stroke.splice(idx, 1); break; }
   }
   if (pixelMap.size === 0) saveBtnEl.disabled = true;
@@ -257,7 +259,7 @@ eyeToggleBtn.addEventListener('click', () => {
 });
 
 clearBtn.addEventListener('click', () => {
-  history.forEach(stroke => stroke.forEach(cell => cell.remove()));
+  history.forEach(stroke => stroke.forEach(({ cell, key }) => { if (key) cell.remove(); }));
   history.length = 0;
   pixelMap.clear();
   saveBtnEl.disabled = true;
@@ -270,10 +272,13 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault();
     const stroke = history.pop();
     if (stroke) {
-      stroke.forEach(cell => {
-        const key = [...pixelMap.entries()].find(([, v]) => v === cell)?.[0];
-        if (key) pixelMap.delete(key);
-        cell.remove();
+      [...stroke].reverse().forEach(({ cell, oldColor, key }) => {
+        if (oldColor !== null) {
+          cell.style.background = oldColor;
+        } else {
+          if (key) pixelMap.delete(key);
+          cell.remove();
+        }
       });
     }
     if (pixelMap.size === 0) saveBtnEl.disabled = true;
