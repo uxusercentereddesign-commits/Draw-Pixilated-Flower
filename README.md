@@ -2,7 +2,7 @@
 
 **Live:** https://pixelatedflower.vercel.app/
 
-A browser-based pixel drawing app. Works on laptop/desktop only — screens narrower than 800px or touch devices show a "Open this link on a laptop to draw" message.
+A browser-based pixel drawing app. Works on laptop/desktop only — touch devices and screens narrower than 800px show a video demo and a prompt to open on a bigger screen.
 
 ## Stack
 
@@ -11,7 +11,7 @@ A browser-based pixel drawing app. Works on laptop/desktop only — screens narr
 - [Pixelify Sans](https://fonts.google.com/specimen/Pixelify+Sans) (Google Fonts)
 - Vite (dev server, build, preview)
 - Supabase (drawing uploads)
-- Vercel Speed Insights
+- Vercel Speed Insights + Analytics
 
 ## Running locally
 
@@ -29,7 +29,9 @@ npm run dev
 
 The full viewport is covered by a `#grid` div with a CSS grid background. A 600×600 px canvas area (`#canvas-box`) sits centered on top with a dashed border and a dimming overlay outside it.
 
-Clicking or dragging inside the canvas paints `div.pixel` elements absolutely positioned on the grid. Painting outside the canvas bounds is ignored.
+Clicking or dragging inside the canvas paints `div.pixel` elements absolutely positioned on the grid. Painting outside the canvas bounds is ignored. Painting over an existing pixel updates its color in place.
+
+Each mousedown→mouseup is one undo stroke. Cmd+Z / Ctrl+Z undoes the entire last stroke at once, restoring any overwritten pixel colors.
 
 ### Controls
 
@@ -39,7 +41,7 @@ Clicking or dragging inside the canvas paints `div.pixel` elements absolutely po
 | Color swatches | Select active color (5 colors) |
 | Shade palette | Select a darker or lighter shade of the active color |
 | Clear (↺) | Remove all painted pixels |
-| Cmd+Z / Ctrl+Z | Undo one pixel at a time |
+| Cmd+Z / Ctrl+Z | Undo the last full stroke |
 | Eye toggle | Show / hide the reference image overlay |
 | Download | Save the canvas as `drawing.png` at 2× scale (1200×1200px) |
 | Add Reference Image | Upload a local image as a tracing guide |
@@ -77,6 +79,10 @@ Active color state is driven by `data-active-color` on `.palette` — set by JS 
 ### Reference image overlay
 
 `#canvas-box::before` renders an image at 30% opacity. The default is `flower image.png` (in `public/`). Uploading via the button replaces it with an object URL set as `--canvas-bg-image`. The eye toggle controls visibility via `data-visible="false"` on `#canvas-box` and `data-state="open"` on the toggle button.
+
+### Mobile / touch fallback
+
+On touch devices or viewports under 800px, the drawing UI is hidden and a full-screen device block is shown instead. It displays a looping YouTube embed (video demo) and text prompting the user to open on a laptop.
 
 ### Corner flower decorations
 
