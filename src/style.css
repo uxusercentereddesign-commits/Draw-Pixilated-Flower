@@ -429,14 +429,24 @@ body {
   margin-bottom: var(--spacing-lg);
 }
 
+.device-block__subtext {
+  font-family: var(--font-pixel);
+  font-size: clamp(11px, 3vw, 16px);
+  letter-spacing: 0.05em;
+  color: var(--color-ink);
+  opacity: 0.45;
+  line-height: 1.8;
+  padding: 0 var(--spacing-lg);
+  margin-top: 12px;
+}
+
 .device-block__text {
   font-family: var(--font-pixel);
-  font-size: clamp(16px, 5vw, 30px);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
+  font-size: clamp(22px, 5vw, 30px);
+  letter-spacing: 0.08em;
   color: var(--color-ink);
   opacity: 0.8;
-  line-height: 1.8;
+  line-height: 1.2;
   padding: 0 var(--spacing-lg);
 }
 
