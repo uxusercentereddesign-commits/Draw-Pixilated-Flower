@@ -50,6 +50,7 @@ window.addEventListener('resize', () => {
 });
 
 const history = [];
+let currentStroke = null;
 const pixelMap = new Map();
 let isPainting = false;
 let isErasing = false;
@@ -139,10 +140,10 @@ const paintCell = (clientX, clientY) => {
   cell.className = 'pixel';
   cell.style.cssText = `left:${x}px;top:${y}px;background:${activeColor}`;
   grid.appendChild(cell);
-  history.push(cell);
+  currentStroke.push(cell);
   pixelMap.set(key, cell);
 
-  if (history.length === 1) saveBtnEl.disabled = false;
+  if (pixelMap.size === 1) saveBtnEl.disabled = false;
 };
 
 const eraseCell = (clientX, clientY) => {
@@ -157,9 +158,11 @@ const eraseCell = (clientX, clientY) => {
 
   cell.remove();
   pixelMap.delete(key);
-  const idx = history.indexOf(cell);
-  if (idx !== -1) history.splice(idx, 1);
-  if (history.length === 0) saveBtnEl.disabled = true;
+  for (const stroke of history) {
+    const idx = stroke.indexOf(cell);
+    if (idx !== -1) { stroke.splice(idx, 1); break; }
+  }
+  if (pixelMap.size === 0) saveBtnEl.disabled = true;
 };
 
 eraserBtn.addEventListener('click', () => {
@@ -171,6 +174,7 @@ eraserBtn.addEventListener('click', () => {
 grid.addEventListener('mousedown', (e) => {
   isPainting = true;
   painted.clear();
+  currentStroke = [];
   if (isErasing) eraseCell(e.clientX, e.clientY);
   else paintCell(e.clientX, e.clientY);
 });
@@ -194,6 +198,8 @@ grid.addEventListener('mousemove', (e) => {
 document.addEventListener('mouseup', () => {
   isPainting = false;
   painted.clear();
+  if (currentStroke && currentStroke.length > 0) history.push(currentStroke);
+  currentStroke = null;
 });
 
 saveBtnEl.addEventListener('click', () => {
@@ -251,7 +257,7 @@ eyeToggleBtn.addEventListener('click', () => {
 });
 
 clearBtn.addEventListener('click', () => {
-  history.forEach(cell => cell.remove());
+  history.forEach(stroke => stroke.forEach(cell => cell.remove()));
   history.length = 0;
   pixelMap.clear();
   saveBtnEl.disabled = true;
@@ -262,12 +268,14 @@ const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
 document.addEventListener('keydown', (e) => {
   if ((isMac ? e.metaKey : e.ctrlKey) && e.key === 'z') {
     e.preventDefault();
-    const last = history.pop();
-    if (last) {
-      const key = [...pixelMap.entries()].find(([, v]) => v === last)?.[0];
-      if (key) pixelMap.delete(key);
-      last.remove();
+    const stroke = history.pop();
+    if (stroke) {
+      stroke.forEach(cell => {
+        const key = [...pixelMap.entries()].find(([, v]) => v === cell)?.[0];
+        if (key) pixelMap.delete(key);
+        cell.remove();
+      });
     }
-    if (history.length === 0) saveBtnEl.disabled = true;
+    if (pixelMap.size === 0) saveBtnEl.disabled = true;
   }
 });
