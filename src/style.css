@@ -105,11 +105,34 @@
 
 
   /* ── Component: Canvas ── */
-  --canvas-size: 600px;
-  --grid-size:   16px;
+  --canvas-padding-top:    var(--spacing-lg);
+  --canvas-padding-bottom: 48px;
+  --canvas-label-height:   28px;
+  --canvas-wrapper-gap:    var(--spacing-lg);
+
+  /* ── Component: Palette ── */
+  --swatch-size:     48px;
+  --shade-size:      36px;
+  --palette-gap:     20px;
+  --palette-row-pad: 8px;
 
   /* ── Component: Controls ── */
-  --btn-icon-size: 28px;
+  --btn-icon-size:     28px;
+  --upload-btn-height: 36px;
+
+  --canvas-row-gap: var(--spacing-lg);
+
+  /* Total non-canvas vertical UI space */
+  --canvas-vertical-ui:   320px;
+  /* Total non-canvas horizontal UI space (side controls × 2) */
+  --canvas-horizontal-ui: 120px;
+
+  --canvas-size: min(
+    600px,
+    calc(100svh - var(--canvas-vertical-ui)),
+    calc(100vw  - var(--canvas-horizontal-ui))
+  );
+  --grid-size:      16px;
 
   /* ── Component: Swatch mask ── */
   --mask-swatch: url('../Union.png') center / contain no-repeat;
@@ -134,14 +157,12 @@ body {
   background-color: var(--color-bg);
   overflow: hidden;
   position: relative;
-  min-height: 100vh;
-  width: 100vw;
+  height: 100svh;
 }
 
 #grid {
   position: absolute;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background-image:
     linear-gradient(var(--color-grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
@@ -162,7 +183,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-lg) 0 48px;
+  row-gap: var(--canvas-row-gap);
+  padding: var(--canvas-padding-top) 0 var(--canvas-padding-bottom);
   pointer-events: none;
 }
 
@@ -170,7 +192,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-lg);
+  gap: var(--canvas-wrapper-gap);
   pointer-events: none;
   overflow: visible;
 }
@@ -274,26 +296,26 @@ body {
 .palette {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--palette-gap);
   align-items: center;
 }
 
 .palette__swatches {
   display: flex;
   gap: var(--spacing-md);
-  padding: 8px var(--spacing-md) 0;
+  padding: var(--palette-row-pad) var(--spacing-md) 0;
 }
 
 .palette__shades {
   display: flex;
   gap: var(--spacing-md);
-  padding: 0 var(--spacing-md) 8px;
+  padding: 0 var(--spacing-md) var(--palette-row-pad);
   transition: transform 220ms var(--ease-out);
 }
 
 .palette__swatch {
-  width: 48px;
-  height: 48px;
+  width: var(--swatch-size);
+  height: var(--swatch-size);
   border: none;
   cursor: pointer;
   pointer-events: all;
@@ -317,8 +339,8 @@ body {
 .palette__swatch[data-color="5"] { --swatch-color: var(--color-5); }
 
 .palette__shade {
-  width: 36px;
-  height: 36px;
+  width: var(--shade-size);
+  height: var(--shade-size);
   border: none;
   cursor: pointer;
   pointer-events: all;
@@ -575,9 +597,28 @@ body {
   .palette__shade:hover  { transform: scale(1.05); }
 }
 
-/* Mobile — hide drawing UI, show device block */
-@media (hover: none) and (pointer: coarse),
-       (max-width: 800px) {
+/* Narrow viewports — reduce flower scale and density */
+@media (max-width: 800px) {
+  .flowers { display: none; }
+}
+
+@media (max-width: 900px) {
+  :root {
+    --flower-height-1:  75px;
+    --flower-height-2:  120px;
+    --flower-height-3:  90px;
+    --flower-height-4:  65px;
+    --flower-height-r1: 60px;
+    --flower-height-r2: 80px;
+    --flower-height-r3: 160px;
+  }
+
+  .flowers--left  .flowers__img { margin-right: calc(var(--gap, 0px) * 0.5); }
+  .flowers--right .flowers__img { margin-left:  calc(var(--gap, 0px) * 0.5); }
+}
+
+/* Touch-first devices — hide drawing UI, show device block */
+@media (hover: none) and (pointer: coarse) {
   .canvas__wrapper { display: none; }
   #device-block    { display: flex; }
 }
