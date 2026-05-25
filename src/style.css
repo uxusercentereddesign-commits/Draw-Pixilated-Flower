@@ -510,7 +510,7 @@ body {
 .palette__swatch[data-active="true"]::after {
   content: '';
   position: absolute;
-  inset: -2px;
+  inset: calc(var(--swatch-size) * -0.042);
   background: var(--color-ink);
   mask: var(--mask-swatch);
   z-index: -1;
@@ -523,7 +523,7 @@ body {
 .palette__shade[data-active="true"]::after {
   content: '';
   position: absolute;
-  inset: -1.2px;
+  inset: calc(var(--shade-size) * -0.033);
   background: var(--color-outline);
   mask: var(--mask-swatch);
   z-index: -1;
