@@ -111,13 +111,14 @@
   --canvas-wrapper-gap:    var(--spacing-lg);
 
   /* ── Component: Palette ── */
-  --swatch-size:     48px;
-  --shade-size:      36px;
-  --palette-gap:     20px;
-  --palette-row-pad: 8px;
+  --swatch-size:      clamp(32px, calc(var(--canvas-size) * 0.08),   48px);
+  --shade-size:       clamp(24px, calc(var(--canvas-size) * 0.06),   36px);
+  --palette-gap:      clamp(14px, calc(var(--canvas-size) * 0.033),  20px);
+  --palette-item-gap: clamp(10px, calc(var(--canvas-size) * 0.027),  16px);
+  --palette-row-pad:  8px;
 
   /* ── Component: Controls ── */
-  --btn-icon-size:     28px;
+  --btn-icon-size:     clamp(22px, calc(var(--canvas-size) * 0.047), 28px);
   --upload-btn-height: 36px;
 
   --canvas-row-gap: var(--spacing-lg);
@@ -224,7 +225,7 @@ body {
 /* Canvas */
 .canvas__label {
   font-family: var(--font-pixel);
-  font-size: 22px;
+  font-size: clamp(16px, calc(var(--canvas-size) * 0.037), 22px);
   font-weight: 400;
   letter-spacing: 0.3em;
   text-transform: uppercase;
@@ -265,7 +266,7 @@ body {
 }
 
 .icon-button i {
-  font-size: 18px;
+  font-size: clamp(14px, calc(var(--canvas-size) * 0.03), 18px);
   color: var(--color-ink);
   opacity: 0.5;
   transition: opacity var(--transition-ui);
@@ -281,11 +282,11 @@ body {
   background-color: white;
   background-image: none;
   border: 1px solid rgba(34,34,34,0.25);
-  padding: 8px 14px;
+  padding: clamp(6px, calc(var(--canvas-size) * 0.013), 8px) clamp(10px, calc(var(--canvas-size) * 0.023), 14px);
   cursor: pointer;
   transition: transform var(--transition-ui), opacity var(--transition-ui);
   font-family: var(--font-pixel);
-  font-size: 14px;
+  font-size: clamp(12px, calc(var(--canvas-size) * 0.023), 14px);
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--color-ink);
@@ -304,14 +305,14 @@ body {
 
 .palette__swatches {
   display: flex;
-  gap: var(--spacing-md);
-  padding: var(--palette-row-pad) var(--spacing-md) 0;
+  gap: var(--palette-item-gap);
+  padding: var(--palette-row-pad) var(--palette-item-gap) 0;
 }
 
 .palette__shades {
   display: flex;
-  gap: var(--spacing-md);
-  padding: 0 var(--spacing-md) var(--palette-row-pad);
+  gap: var(--palette-item-gap);
+  padding: 0 var(--palette-item-gap) var(--palette-row-pad);
   transition: transform 220ms var(--ease-out);
 }
 
@@ -384,11 +385,12 @@ body {
 .palette[data-active-color="5"] .palette__shade[data-level="300"] { --shade-color: var(--color-5-300); }
 .palette[data-active-color="5"] .palette__shade[data-level="100"] { --shade-color: var(--color-5-100); }
 
-.palette[data-active-color="1"] .palette__shades { transform: translateX(-128px); }
-.palette[data-active-color="2"] .palette__shades { transform: translateX(-64px); }
+/* Shade row slides to center under the active swatch. Step = swatch-size + item-gap */
+.palette[data-active-color="1"] .palette__shades { transform: translateX(calc(-2 * (var(--swatch-size) + var(--palette-item-gap)))); }
+.palette[data-active-color="2"] .palette__shades { transform: translateX(calc(-1 * (var(--swatch-size) + var(--palette-item-gap)))); }
 .palette[data-active-color="3"] .palette__shades { transform: translateX(0px); }
-.palette[data-active-color="4"] .palette__shades { transform: translateX(64px); }
-.palette[data-active-color="5"] .palette__shades { transform: translateX(128px); }
+.palette[data-active-color="4"] .palette__shades { transform: translateX(calc( 1 * (var(--swatch-size) + var(--palette-item-gap)))); }
+.palette[data-active-color="5"] .palette__shades { transform: translateX(calc( 2 * (var(--swatch-size) + var(--palette-item-gap)))); }
 
 /* Flowers */
 .flowers {
