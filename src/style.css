@@ -158,6 +158,8 @@ body {
   overflow: hidden;
   position: relative;
   height: 100svh;
+  max-width: 1920px;
+  margin-inline: auto;
 }
 
 #grid {
