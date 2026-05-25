@@ -2,7 +2,7 @@
 
 **Live:** https://pixelatedflower.vercel.app/
 
-A browser-based pixel drawing app. Works on laptop/desktop only — touch devices and screens narrower than 800px show a video demo and a prompt to open on a bigger screen.
+A browser-based pixel drawing app. Works on laptop/desktop only — touch/pointer-coarse devices show a video demo and a prompt to open on a bigger screen. Capped at 1920px wide.
 
 ## Stack
 
@@ -27,7 +27,7 @@ npm run dev
 
 ## How it works
 
-The full viewport is covered by a `#grid` div with a CSS grid background. A 600×600 px canvas area (`#canvas-box`) sits centered on top with a dashed border and a dimming overlay outside it.
+The full viewport is covered by a `#grid` div with a CSS grid background. A canvas area (`#canvas-box`, up to 600×600px) sits centered on top with a dashed border and a dimming overlay outside it. Its size is constrained to always fit the visible viewport: `min(600px, calc(100svh - 320px), calc(100vw - 120px))` — the 320px and 120px offsets account for the total non-canvas UI space vertically and horizontally.
 
 Clicking or dragging inside the canvas paints `div.pixel` elements absolutely positioned on the grid. Painting outside the canvas bounds is ignored. Painting over an existing pixel updates its color in place.
 
@@ -82,7 +82,11 @@ Active color state is driven by `data-active-color` on `.palette` — set by JS 
 
 ### Mobile / touch fallback
 
-On touch devices or viewports under 800px, the drawing UI is hidden and a full-screen device block is shown instead. It displays a looping YouTube embed (video demo) and text prompting the user to open on a laptop.
+The app is desktop-only. Two capability queries enforce this:
+
+- **Touch devices** (`hover: none and pointer: coarse`) — drawing UI is hidden, full-screen device block is shown with a looping video demo and a prompt to open on a laptop.
+- **Narrow viewports (≤ 800px)** — corner flower decorations are hidden entirely.
+- **Medium viewports (≤ 1100px)** — flowers scale down to reduce visual crowding.
 
 ### Corner flower decorations
 
@@ -127,9 +131,17 @@ Exception: transient animation-trigger classes (`.animating`, `.slide-left`) rem
 ```
 Primitives  →  raw named values  (--primitive-red-300: #F07A86)
 Semantic    →  purpose aliases   (--color-1-300: var(--primitive-red-300))
-Component   →  element tokens    (--canvas-size, --flower-height-1 …)
+Component   →  element tokens    (--canvas-size, --canvas-vertical-ui, --flower-height-1 …)
 ```
 Only repeated decisions are tokenized. Single-use values are inlined at the level that consumes them.
+
+**Canvas sizing tokens:**
+
+| Token | Value | Purpose |
+|-------|-------|---------|
+| `--canvas-vertical-ui` | `320px` | Total non-canvas vertical space (label + palette + upload + padding) |
+| `--canvas-horizontal-ui` | `120px` | Total non-canvas horizontal space (side controls × 2) |
+| `--canvas-size` | `min(600px, calc(100svh - 320px), calc(100vw - 120px))` | Resolved canvas dimension |
 
 ## CSS architecture
 
