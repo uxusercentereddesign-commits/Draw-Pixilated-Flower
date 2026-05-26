@@ -23,8 +23,7 @@
 
   /* ── Primitives: Color ── */
   --primitive-white:       #ffffff;
-  --primitive-black:       #000000;
-  --primitive-near-black:  #222222;
+  --primitive-black:       #222222;
   --primitive-light-gray:  #d8d8d8;
   --primitive-white-fog:   rgba(255, 255, 255, 0.706);
 
@@ -56,7 +55,7 @@
 
   /* ── Semantic: Color ── */
   --color-bg:          var(--primitive-white);
-  --color-ink:         var(--primitive-near-black);
+  --color-ink:         var(--primitive-black);
   --color-grid:        var(--primitive-light-gray);
   --color-canvas-dim:  var(--primitive-white-fog);
   --color-outline:     var(--primitive-black);
